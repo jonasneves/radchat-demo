@@ -280,7 +280,8 @@ function NotificationCard({ notification, onAcknowledge, onCallBack }) {
 
   return (
     <div
-      className={`mb-4 border-l-4 ${isUrgent ? 'border-red-500 bg-red-50' : 'border-amber-500 bg-amber-50'} rounded-r-2xl shadow-sm`}
+      className={`mb-4 border-l-4 ${isUrgent ? 'border-red-500 bg-red-50 animate-pulse' : 'border-amber-500 bg-amber-50'} rounded-r-2xl shadow-sm`}
+      style={isUrgent ? { animationDuration: '1s', animationIterationCount: '5' } : undefined}
     >
       <div className="p-4">
         <div className="flex items-start gap-3">
