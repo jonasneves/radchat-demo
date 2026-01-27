@@ -39,20 +39,24 @@ function formatRelativeTime(timestamp) {
 }
 
 function playNotificationSound() {
-  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  const oscillator = audioContext.createOscillator();
-  const gainNode = audioContext.createGain();
+  try {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
 
-  oscillator.connect(gainNode);
-  gainNode.connect(audioContext.destination);
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
 
-  oscillator.frequency.value = 880;
-  oscillator.type = 'sine';
-  gainNode.gain.value = 0.3;
+    oscillator.frequency.value = 880;
+    oscillator.type = 'sine';
+    gainNode.gain.value = 0.3;
 
-  oscillator.start();
-  gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-  oscillator.stop(audioContext.currentTime + 0.3);
+    oscillator.start();
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+    oscillator.stop(audioContext.currentTime + 0.3);
+  } catch {
+    // Audio not available
+  }
 }
 
 function requestNotificationPermission() {
@@ -414,7 +418,7 @@ function App() {
       return;
     }
 
-    if (lowerInput.includes('acr') || lowerInput.includes('criteria') || lowerInput.includes('appropriateness') || lowerInput.includes('pe')) {
+    if (lowerInput.includes('acr') || lowerInput.includes('criteria') || lowerInput.includes('appropriateness') || /\bpe\b/.test(lowerInput)) {
       setThinkingType('acr');
       await delay(600);
       setThinkingType(null);
