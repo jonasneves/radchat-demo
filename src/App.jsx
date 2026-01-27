@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Send, Phone, AlertCircle, CheckCircle, Clock, Activity, Bell, Check, CheckCheck, Loader2, Database, BookOpen, PhoneCall, X, Mic, ThumbsUp, ThumbsDown, Zap, FileText, Users, Sun, Moon } from 'lucide-react';
+import { Send, Phone, AlertCircle, CheckCircle, Clock, Activity, Bell, Check, CheckCheck, Loader2, Database, BookOpen, PhoneCall, X, Mic, ThumbsUp, ThumbsDown, Zap, FileText, Users, Sun, Moon, PanelRightClose, PanelRight } from 'lucide-react';
 
 const DEMO_SEQUENCE = [
   { input: "What's the status of the chest CT for the patient in ICU bed 4?", delay: 800 },
@@ -185,10 +185,11 @@ function ShiftIndicator() {
 
   return (
     <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500">
+      <span className="text-slate-400">On Call:</span>
       <Icon size={14} />
-      <span>{shift.name}</span>
+      <span>{shift.name} Shift</span>
       <span className="text-slate-300">•</span>
-      <span className="text-slate-400">{shift.onCall}</span>
+      <span className="text-slate-600 font-medium">{shift.onCall}</span>
     </div>
   );
 }
@@ -612,6 +613,7 @@ function App() {
   const [thinkingType, setThinkingType] = useState(null);
   const [isTyping, setIsTyping] = useState(false);
   const [isRunningDemo, setIsRunningDemo] = useState(false);
+  const [showRadiologistView, setShowRadiologistView] = useState(true);
   const [callbackNotification, setCallbackNotification] = useState(null);
   const [chatNotification, setChatNotification] = useState(null);
   const [stats, setStats] = useState({ resolved: 47, escalated: 3 });
@@ -937,13 +939,22 @@ function App() {
           <h1 className="text-xl font-bold text-slate-900">RadChat</h1>
           <ShiftIndicator />
         </div>
-        <button
-          onClick={runDemo}
-          disabled={isInputDisabled}
-          className="px-4 py-2 bg-duke-royal text-white text-sm font-medium rounded-lg hover:bg-duke-navy disabled:bg-slate-300 disabled:cursor-not-allowed transition"
-        >
-          {isRunningDemo ? 'Running...' : 'Run Demo'}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowRadiologistView(!showRadiologistView)}
+            className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition"
+            title={showRadiologistView ? 'Hide Radiologist View' : 'Show Radiologist View'}
+          >
+            {showRadiologistView ? <PanelRightClose size={20} /> : <PanelRight size={20} />}
+          </button>
+          <button
+            onClick={runDemo}
+            disabled={isInputDisabled}
+            className="px-4 py-2 bg-duke-royal text-white text-sm font-medium rounded-lg hover:bg-duke-navy disabled:bg-slate-300 disabled:cursor-not-allowed transition"
+          >
+            {isRunningDemo ? 'Running...' : 'Run Demo'}
+          </button>
+        </div>
       </header>
 
       {/* Main Content */}
@@ -1011,39 +1022,41 @@ function App() {
           </div>
 
           {/* Radiologist Dashboard */}
-          <div className="flex-1 flex flex-col bg-slate-800 max-h-[40vh] lg:max-h-full">
-            <div className="px-4 py-3 border-b border-slate-700 bg-slate-900">
-              <h2 className="text-sm font-semibold text-white flex items-center justify-between">
-                <span className="flex items-center gap-2">
-                  <AlertCircle size={14} />
-                  Radiologist View
-                </span>
-                {notifications.length > 0 && (
-                  <span className="px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full animate-pulse">
-                    {notifications.length}
+          {showRadiologistView && (
+            <div className="flex-1 flex flex-col bg-slate-800 max-h-[40vh] lg:max-h-full">
+              <div className="px-4 py-3 border-b border-slate-700 bg-slate-900">
+                <h2 className="text-sm font-semibold text-white flex items-center justify-between">
+                  <span className="flex items-center gap-2">
+                    <AlertCircle size={14} />
+                    Radiologist View
                   </span>
-                )}
-              </h2>
-              <p className="text-xs text-slate-400 mt-0.5">Only escalations appear here</p>
-            </div>
+                  {notifications.length > 0 && (
+                    <span className="px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full animate-pulse">
+                      {notifications.length}
+                    </span>
+                  )}
+                </h2>
+                <p className="text-xs text-slate-400 mt-0.5">Only escalations appear here</p>
+              </div>
 
-            <div className="flex-1 overflow-y-auto p-4">
-              {notifications.length === 0 ? (
-                <EmptyRadiologistState resolved={stats.resolved} escalated={stats.escalated} />
-              ) : (
-                notifications.map((notif) => (
-                  <NotificationCard
-                    key={notif.id}
-                    notification={notif}
-                    onAcknowledge={handleAcknowledge}
-                    onCallBack={handleCallBack}
-                    onChat={handleChat}
-                  />
-                ))
-              )}
-              <div ref={notificationsEndRef} />
+              <div className="flex-1 overflow-y-auto p-4">
+                {notifications.length === 0 ? (
+                  <EmptyRadiologistState resolved={stats.resolved} escalated={stats.escalated} />
+                ) : (
+                  notifications.map((notif) => (
+                    <NotificationCard
+                      key={notif.id}
+                      notification={notif}
+                      onAcknowledge={handleAcknowledge}
+                      onCallBack={handleCallBack}
+                      onChat={handleChat}
+                    />
+                  ))
+                )}
+                <div ref={notificationsEndRef} />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
