@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Send, Phone, AlertCircle, CheckCircle, Clock, Activity, Bell, Check, CheckCheck, Loader2, Database, BookOpen, PhoneCall, X, Mic, ThumbsUp, ThumbsDown, Zap, FileText, Users, Sun, Moon, PanelRightClose, PanelRight, Lock, ChevronRight, Server, ClipboardList } from 'lucide-react';
+import { Send, Phone, AlertCircle, CheckCircle, Clock, Activity, Bell, Check, CheckCheck, Loader2, Database, BookOpen, PhoneCall, X, Mic, ThumbsUp, ThumbsDown, Zap, FileText, Users, Sun, Moon, PanelRightClose, PanelRight, Server, ClipboardList } from 'lucide-react';
 
 // Phase definitions matching DIHI proposal
 const PHASES = {
@@ -268,68 +268,32 @@ function ShiftIndicator() {
 
 function PhaseToggle({ currentPhase, onPhaseChange, disabled }) {
   return (
-    <div className="bg-slate-50 border-b border-slate-200 px-4 py-3">
-      <div className="flex flex-col items-center gap-2">
-        {/* Phase buttons */}
-        <div className="flex items-center gap-1 bg-white rounded-xl p-1 shadow-sm border border-slate-200">
-          {[1, 2, 3].map((phase) => {
-            const phaseConfig = PHASES[phase];
-            const Icon = phaseConfig.icon;
-            const isActive = currentPhase === phase;
+    <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-1">
+      {[1, 2, 3].map((phase) => {
+        const phaseConfig = PHASES[phase];
+        const Icon = phaseConfig.icon;
+        const isActive = currentPhase === phase;
 
-            return (
-              <button
-                key={phase}
-                onClick={() => onPhaseChange(phase)}
-                disabled={disabled}
-                className={`
-                  flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all
-                  ${isActive
-                    ? `${phaseConfig.color} text-white shadow-md`
-                    : 'text-slate-500 hover:text-slate-700 hover:bg-slate-100'
-                  }
-                  disabled:opacity-50 disabled:cursor-not-allowed
-                `}
-              >
-                <Icon size={16} />
-                <span className="hidden sm:inline">{phaseConfig.name}</span>
-                <span className="sm:hidden">{phase}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Phase description */}
-        <div className="flex items-center gap-2 text-xs">
-          <span className={`font-semibold ${PHASES[currentPhase].textColor}`}>
-            {PHASES[currentPhase].title}
-          </span>
-          <span className="text-slate-400">•</span>
-          <span className="text-slate-500">{PHASES[currentPhase].description}</span>
-        </div>
-
-        {/* Feature pills */}
-        <div className="flex flex-wrap items-center justify-center gap-1.5">
-          {PHASES[currentPhase].features.map((feature, idx) => (
-            <span
-              key={idx}
-              className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${PHASES[currentPhase].lightColor} ${PHASES[currentPhase].textColor}`}
-            >
-              {feature}
-            </span>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function LockedFeatureOverlay({ featureName, unlocksIn }) {
-  return (
-    <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm flex flex-col items-center justify-center z-10 rounded-lg">
-      <Lock size={24} className="text-slate-400 mb-2" />
-      <p className="text-sm font-medium text-slate-300">{featureName}</p>
-      <p className="text-xs text-slate-500 mt-1">Available in {unlocksIn}</p>
+        return (
+          <button
+            key={phase}
+            onClick={() => onPhaseChange(phase)}
+            disabled={disabled}
+            className={`
+              flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all
+              ${isActive
+                ? `${phaseConfig.color} text-white shadow-sm`
+                : 'text-slate-500 hover:text-slate-700 hover:bg-white'
+              }
+              disabled:opacity-50 disabled:cursor-not-allowed
+            `}
+          >
+            <Icon size={14} />
+            <span className="hidden sm:inline">{phaseConfig.name}</span>
+            <span className="sm:hidden">{phase}</span>
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -549,37 +513,18 @@ function Message({ message, onReact }) {
   );
 }
 
-function EmptyClinicianState({ currentPhase = 3 }) {
-  const phaseConfig = PHASES[currentPhase];
-  const Icon = phaseConfig.icon;
-
-  const descriptions = {
-    1: "Ask about contact information, call schedules, and protocols",
-    2: "Ask about ACR appropriateness criteria, contacts, and protocols",
-    3: "Select a patient or use the quick actions below to get started"
-  };
-
+function EmptyClinicianState() {
   return (
     <div className="flex-1 flex flex-col items-center justify-center text-center p-8">
-      <div className={`w-16 h-16 ${phaseConfig.lightColor} rounded-2xl flex items-center justify-center mb-4`}>
-        <Icon size={28} className={phaseConfig.textColor} />
+      <div className="w-14 h-14 bg-duke-royal/10 rounded-2xl flex items-center justify-center mb-3">
+        <Activity size={24} className="text-duke-royal" />
       </div>
-      <p className="text-lg font-semibold text-slate-800 mb-1">
-        {phaseConfig.name}: {phaseConfig.title}
+      <p className="text-base font-medium text-slate-700 mb-1">
+        How can I help?
       </p>
-      <p className="text-sm text-slate-500 max-w-xs">
-        {descriptions[currentPhase]}
+      <p className="text-sm text-slate-400">
+        Use the quick actions below or type a message
       </p>
-      <div className="flex flex-wrap items-center justify-center gap-1.5 mt-4">
-        {phaseConfig.features.map((feature, idx) => (
-          <span
-            key={idx}
-            className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${phaseConfig.lightColor} ${phaseConfig.textColor}`}
-          >
-            {feature}
-          </span>
-        ))}
-      </div>
     </div>
   );
 }
@@ -1156,58 +1101,43 @@ function App() {
   return (
     <div className="w-full h-screen bg-duke-whisper flex flex-col">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between flex-shrink-0">
-        <div className="flex items-center gap-6">
-          <h1 className="text-xl font-bold text-slate-900">RadChat</h1>
-          <ShiftIndicator />
+      <header className="bg-white border-b border-slate-200 px-4 py-2.5 flex items-center justify-between flex-shrink-0">
+        <div className="flex items-center gap-4">
+          <h1 className="text-lg font-bold text-slate-900">RadChat</h1>
+          <PhaseToggle
+            currentPhase={currentPhase}
+            onPhaseChange={handlePhaseChange}
+            disabled={isRunningDemo || isTyping}
+          />
         </div>
         <div className="flex items-center gap-3">
+          <ShiftIndicator />
           <button
             onClick={runDemo}
             disabled={isInputDisabled}
-            className="px-4 py-2 bg-duke-royal text-white text-sm font-medium rounded-lg hover:bg-duke-navy disabled:bg-slate-300 disabled:cursor-not-allowed transition"
+            className="px-3 py-1.5 bg-duke-royal text-white text-xs font-medium rounded-lg hover:bg-duke-navy disabled:bg-slate-300 disabled:cursor-not-allowed transition"
           >
             {isRunningDemo ? 'Running...' : 'Run Demo'}
           </button>
           <button
             onClick={() => setShowRadiologistView(!showRadiologistView)}
-            className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition"
+            className="p-1.5 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition"
             title={showRadiologistView ? 'Hide Radiologist View' : 'Show Radiologist View'}
           >
-            {showRadiologistView ? <PanelRightClose size={20} /> : <PanelRight size={20} />}
+            {showRadiologistView ? <PanelRightClose size={18} /> : <PanelRight size={18} />}
           </button>
         </div>
       </header>
 
-      {/* Phase Toggle */}
-      <PhaseToggle
-        currentPhase={currentPhase}
-        onPhaseChange={handlePhaseChange}
-        disabled={isRunningDemo || isTyping}
-      />
-
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
         {/* Patient sidebar only in Phase III */}
-        {currentPhase === 3 ? (
+        {currentPhase === 3 && (
           <RecentExamsSidebar
             exams={RECENT_EXAMS}
             onSelect={handleSelectPatient}
             selectedMrn={selectedPatient?.mrn}
           />
-        ) : (
-          <div className="w-56 bg-slate-100 border-r border-slate-200 flex-shrink-0 hidden xl:flex flex-col relative">
-            <div className="px-4 py-3 border-b border-slate-200">
-              <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Recent Exams</h3>
-            </div>
-            <div className="flex-1 flex items-center justify-center p-4">
-              <div className="text-center">
-                <Lock size={24} className="text-slate-300 mx-auto mb-2" />
-                <p className="text-xs text-slate-400 font-medium">Patient Context</p>
-                <p className="text-[10px] text-slate-400 mt-1">Available in Phase III</p>
-              </div>
-            </div>
-          </div>
         )}
 
         <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
@@ -1220,7 +1150,7 @@ function App() {
             <div className="flex-1 flex flex-col overflow-hidden">
               <div className="flex-1 overflow-y-auto p-4">
                 {messages.length === 0 && !thinkingType ? (
-                  <EmptyClinicianState currentPhase={currentPhase} />
+                  <EmptyClinicianState />
                 ) : (
                   <>
                     {messages.map((msg, idx) => (
@@ -1268,44 +1198,26 @@ function App() {
             </div>
           </div>
 
-          {/* Radiologist Dashboard */}
-          {showRadiologistView && (
-            <div className="flex-1 flex flex-col bg-slate-800 max-h-[40vh] lg:max-h-full relative">
+          {/* Radiologist Dashboard - Phase III only */}
+          {showRadiologistView && currentPhase === 3 && (
+            <div className="w-80 flex-shrink-0 flex flex-col bg-slate-800 max-h-[40vh] lg:max-h-full">
               <div className="px-4 py-3 border-b border-slate-700 bg-slate-900">
                 <h2 className="text-sm font-semibold text-white flex items-center justify-between">
                   <span className="flex items-center gap-2">
                     <AlertCircle size={14} />
                     Radiologist View
-                    {currentPhase < 3 && (
-                      <span className="px-1.5 py-0.5 bg-slate-700 text-slate-400 text-[10px] rounded">
-                        Phase III
-                      </span>
-                    )}
                   </span>
-                  {currentPhase === 3 && notifications.length > 0 && (
+                  {notifications.length > 0 && (
                     <span className="px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full animate-pulse">
                       {notifications.length}
                     </span>
                   )}
                 </h2>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  {currentPhase < 3 ? 'Escalation dashboard requires EMR integration' : 'Only escalations appear here'}
-                </p>
+                <p className="text-xs text-slate-400 mt-0.5">Only escalations appear here</p>
               </div>
 
               <div className="flex-1 overflow-y-auto p-4">
-                {currentPhase < 3 ? (
-                  <div className="flex-1 flex flex-col items-center justify-center text-center p-6">
-                    <div className="w-14 h-14 bg-slate-700 rounded-xl flex items-center justify-center mb-3">
-                      <Lock size={24} className="text-slate-500" />
-                    </div>
-                    <p className="text-base font-semibold text-slate-400 mb-0.5">Escalation Dashboard</p>
-                    <p className="text-xs text-slate-500">Available in Phase III</p>
-                    <p className="text-xs text-slate-600 mt-2 max-w-[200px]">
-                      Real-time escalation routing and notification management requires EMR integration
-                    </p>
-                  </div>
-                ) : notifications.length === 0 ? (
+                {notifications.length === 0 ? (
                   <EmptyRadiologistState resolved={stats.resolved} escalated={stats.escalated} />
                 ) : (
                   notifications.map((notif) => (
