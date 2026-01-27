@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Send, Phone, AlertCircle, CheckCircle, Clock, Activity, Bell, Check, CheckCheck, Loader2, Database, BookOpen, PhoneCall, X, Mic, ThumbsUp, ThumbsDown, Zap, FileText, Users, Sun, Moon, PanelRightClose, PanelRight, Server, ClipboardList } from 'lucide-react';
+import { Send, Phone, AlertCircle, CheckCircle, Clock, Activity, Bell, Check, CheckCheck, Loader2, Database, BookOpen, PhoneCall, X, Mic, ThumbsUp, ThumbsDown, Zap, FileText, Users, Sun, Moon, ChevronLeft, ChevronRight, Server, ClipboardList } from 'lucide-react';
 
 // Phase definitions matching DIHI proposal
 const PHASES = {
@@ -1146,13 +1146,6 @@ function App() {
           >
             {isRunningDemo ? 'Running...' : 'Run Demo'}
           </button>
-          <button
-            onClick={() => setShowRadiologistView(!showRadiologistView)}
-            className="p-2.5 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition min-h-[44px] min-w-[44px] flex items-center justify-center"
-            title={showRadiologistView ? 'Hide Radiologist View' : 'Show Radiologist View'}
-          >
-            {showRadiologistView ? <PanelRightClose size={22} /> : <PanelRight size={22} />}
-          </button>
         </div>
       </header>
 
@@ -1226,39 +1219,52 @@ function App() {
           </div>
 
           {/* Radiologist Dashboard - Phase III only */}
-          {showRadiologistView && currentPhase === 3 && (
-            <div className="w-96 flex-shrink-0 flex flex-col bg-slate-800 max-h-[40vh] lg:max-h-full">
-              <div className="px-5 py-4 border-b border-slate-700 bg-slate-900">
-                <h2 className="text-base font-semibold text-white flex items-center justify-between">
-                  <span className="flex items-center gap-2">
-                    <AlertCircle size={18} />
-                    Radiologist View
-                  </span>
-                  {notifications.length > 0 && (
-                    <span className="px-2.5 py-1 bg-red-500 text-white text-sm font-bold rounded-full animate-pulse">
-                      {notifications.length}
-                    </span>
-                  )}
-                </h2>
-                <p className="text-sm text-slate-400 mt-1">Only escalations appear here</p>
-              </div>
+          {currentPhase === 3 && (
+            <div className={`flex-shrink-0 flex flex-col bg-slate-800 max-h-[40vh] lg:max-h-full relative ${showRadiologistView ? 'w-96' : 'w-0'}`}>
+              {/* Toggle button on left edge */}
+              <button
+                onClick={() => setShowRadiologistView(!showRadiologistView)}
+                className="absolute -left-3 top-1/2 -translate-y-1/2 z-10 w-6 h-12 bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white rounded-l-lg flex items-center justify-center transition shadow-md"
+                title={showRadiologistView ? 'Hide Radiologist View' : 'Show Radiologist View'}
+              >
+                {showRadiologistView ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+              </button>
 
-              <div className="flex-1 overflow-y-auto p-4">
-                {notifications.length === 0 ? (
-                  <EmptyRadiologistState resolved={stats.resolved} escalated={stats.escalated} />
-                ) : (
-                  notifications.map((notif) => (
-                    <NotificationCard
-                      key={notif.id}
-                      notification={notif}
-                      onAcknowledge={handleAcknowledge}
-                      onCallBack={handleCallBack}
-                      onChat={handleChat}
-                    />
-                  ))
-                )}
-                <div ref={notificationsEndRef} />
-              </div>
+              {showRadiologistView && (
+                <>
+                  <div className="px-5 py-4 border-b border-slate-700 bg-slate-900">
+                    <h2 className="text-base font-semibold text-white flex items-center justify-between">
+                      <span className="flex items-center gap-2">
+                        <AlertCircle size={18} />
+                        Radiologist View
+                      </span>
+                      {notifications.length > 0 && (
+                        <span className="px-2.5 py-1 bg-red-500 text-white text-sm font-bold rounded-full animate-pulse">
+                          {notifications.length}
+                        </span>
+                      )}
+                    </h2>
+                    <p className="text-sm text-slate-400 mt-1">Only escalations appear here</p>
+                  </div>
+
+                  <div className="flex-1 overflow-y-auto p-4">
+                    {notifications.length === 0 ? (
+                      <EmptyRadiologistState resolved={stats.resolved} escalated={stats.escalated} />
+                    ) : (
+                      notifications.map((notif) => (
+                        <NotificationCard
+                          key={notif.id}
+                          notification={notif}
+                          onAcknowledge={handleAcknowledge}
+                          onCallBack={handleCallBack}
+                          onChat={handleChat}
+                        />
+                      ))
+                    )}
+                    <div ref={notificationsEndRef} />
+                  </div>
+                </>
+              )}
             </div>
           )}
         </div>
