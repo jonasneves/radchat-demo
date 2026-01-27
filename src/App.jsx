@@ -267,33 +267,59 @@ function ShiftIndicator() {
 }
 
 function PhaseToggle({ currentPhase, onPhaseChange, disabled }) {
-  return (
-    <div className="flex items-center gap-1 bg-slate-100 rounded-xl p-1">
-      {[1, 2, 3].map((phase) => {
-        const phaseConfig = PHASES[phase];
-        const Icon = phaseConfig.icon;
-        const isActive = currentPhase === phase;
+  const currentConfig = PHASES[currentPhase];
 
-        return (
-          <button
-            key={phase}
-            onClick={() => onPhaseChange(phase)}
-            disabled={disabled}
-            className={`
-              flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all min-h-[44px]
-              ${isActive
-                ? `${phaseConfig.color} text-white shadow-sm`
-                : 'text-slate-500 hover:text-slate-700 hover:bg-white'
-              }
-              disabled:opacity-50 disabled:cursor-not-allowed
-            `}
-          >
-            <Icon size={18} />
-            <span className="hidden sm:inline">{phaseConfig.name}</span>
-            <span className="sm:hidden">{phase}</span>
-          </button>
-        );
-      })}
+  return (
+    <div className="flex items-center gap-4">
+      <div className="flex items-center gap-1 bg-slate-100 rounded-xl p-1">
+        {[1, 2, 3].map((phase) => {
+          const phaseConfig = PHASES[phase];
+          const Icon = phaseConfig.icon;
+          const isActive = currentPhase === phase;
+
+          return (
+            <button
+              key={phase}
+              onClick={() => onPhaseChange(phase)}
+              disabled={disabled}
+              className={`
+                flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all min-h-[44px]
+                ${isActive
+                  ? `${phaseConfig.color} text-white shadow-sm`
+                  : 'text-slate-500 hover:text-slate-700 hover:bg-white'
+                }
+                disabled:opacity-50 disabled:cursor-not-allowed
+              `}
+            >
+              <Icon size={18} />
+              <span className="hidden sm:inline">{phaseConfig.name}</span>
+              <span className="sm:hidden">{phase}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Phase info */}
+      <div className="hidden md:flex items-center gap-3">
+        <div className="flex flex-col">
+          <span className={`text-sm font-semibold ${currentConfig.textColor}`}>
+            {currentConfig.title}
+          </span>
+          <span className="text-xs text-slate-400">
+            {currentConfig.description}
+          </span>
+        </div>
+        <div className="hidden lg:flex items-center gap-1.5">
+          {currentConfig.features.map((feature, idx) => (
+            <span
+              key={idx}
+              className={`px-2.5 py-1 rounded-lg text-xs font-medium ${currentConfig.lightColor} ${currentConfig.textColor}`}
+            >
+              {feature}
+            </span>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
