@@ -7,7 +7,6 @@ const PHASES = {
     name: 'Phase I',
     title: 'Information Retrieval',
     description: 'Contact routing & call schedules',
-    timeline: 'Months 1-3',
     features: ['Contact directory', 'Time-based routing', 'Basic triage', 'Protocol info'],
     icon: Phone,
     color: 'bg-duke-royal',
@@ -20,7 +19,6 @@ const PHASES = {
     name: 'Phase II',
     title: 'ACR Criteria',
     description: 'Evidence-based imaging guidance',
-    timeline: 'Months 4-6',
     features: ['ACR Appropriateness', 'Clinical decision support', 'Imaging recommendations'],
     icon: ClipboardList,
     color: 'bg-amber-600',
@@ -33,7 +31,6 @@ const PHASES = {
     name: 'Phase III',
     title: 'EMR Integration',
     description: 'Patient-specific Epic data',
-    timeline: 'Post-Grant',
     features: ['PACS/RIS integration', 'Patient context', 'Real-time status', 'Escalation'],
     icon: Server,
     color: 'bg-emerald-600',
@@ -309,8 +306,6 @@ function PhaseToggle({ currentPhase, onPhaseChange, disabled }) {
           </span>
           <span className="text-slate-400">•</span>
           <span className="text-slate-500">{PHASES[currentPhase].description}</span>
-          <span className="text-slate-400">•</span>
-          <span className="text-slate-400">{PHASES[currentPhase].timeline}</span>
         </div>
 
         {/* Feature pills */}
