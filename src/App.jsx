@@ -939,20 +939,20 @@ function App() {
           <h1 className="text-xl font-bold text-slate-900">RadChat</h1>
           <ShiftIndicator />
         </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setShowRadiologistView(!showRadiologistView)}
-            className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition"
-            title={showRadiologistView ? 'Hide Radiologist View' : 'Show Radiologist View'}
-          >
-            {showRadiologistView ? <PanelRightClose size={20} /> : <PanelRight size={20} />}
-          </button>
+        <div className="flex items-center gap-3">
           <button
             onClick={runDemo}
             disabled={isInputDisabled}
             className="px-4 py-2 bg-duke-royal text-white text-sm font-medium rounded-lg hover:bg-duke-navy disabled:bg-slate-300 disabled:cursor-not-allowed transition"
           >
             {isRunningDemo ? 'Running...' : 'Run Demo'}
+          </button>
+          <button
+            onClick={() => setShowRadiologistView(!showRadiologistView)}
+            className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition"
+            title={showRadiologistView ? 'Hide Radiologist View' : 'Show Radiologist View'}
+          >
+            {showRadiologistView ? <PanelRightClose size={20} /> : <PanelRight size={20} />}
           </button>
         </div>
       </header>
