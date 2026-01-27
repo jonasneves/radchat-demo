@@ -1,12 +1,91 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Send, Phone, AlertCircle, CheckCircle, Clock, Activity, Bell, Check, CheckCheck, Loader2, Database, BookOpen, PhoneCall, X, Mic, ThumbsUp, ThumbsDown, Zap, FileText, Users, Sun, Moon, PanelRightClose, PanelRight } from 'lucide-react';
+import { Send, Phone, AlertCircle, CheckCircle, Clock, Activity, Bell, Check, CheckCheck, Loader2, Database, BookOpen, PhoneCall, X, Mic, ThumbsUp, ThumbsDown, Zap, FileText, Users, Sun, Moon, PanelRightClose, PanelRight, Lock, ChevronRight, Server, ClipboardList } from 'lucide-react';
 
-const DEMO_SEQUENCE = [
-  { input: "What's the status of the chest CT for the patient in ICU bed 4?", delay: 800 },
-  { input: "What are the ACR appropriateness criteria for suspected PE?", delay: 1500 },
-  { input: "URGENT: Suspected aortic dissection in ER bay 2", delay: 1500 },
-  { input: "Who covers body imaging today?", delay: 1500 }
-];
+// Phase definitions matching DIHI proposal
+const PHASES = {
+  1: {
+    name: 'Phase I',
+    title: 'Information Retrieval',
+    description: 'Contact routing & call schedules',
+    timeline: 'Months 1-3',
+    features: ['Contact directory', 'Time-based routing', 'Basic triage', 'Protocol info'],
+    icon: Phone,
+    color: 'bg-duke-royal',
+    lightColor: 'bg-duke-royal/10',
+    textColor: 'text-duke-royal',
+    borderColor: 'border-duke-royal',
+    ringColor: 'ring-duke-royal'
+  },
+  2: {
+    name: 'Phase II',
+    title: 'ACR Criteria',
+    description: 'Evidence-based imaging guidance',
+    timeline: 'Months 4-6',
+    features: ['ACR Appropriateness', 'Clinical decision support', 'Imaging recommendations'],
+    icon: ClipboardList,
+    color: 'bg-amber-600',
+    lightColor: 'bg-amber-600/10',
+    textColor: 'text-amber-600',
+    borderColor: 'border-amber-600',
+    ringColor: 'ring-amber-600'
+  },
+  3: {
+    name: 'Phase III',
+    title: 'EMR Integration',
+    description: 'Patient-specific Epic data',
+    timeline: 'Post-Grant',
+    features: ['PACS/RIS integration', 'Patient context', 'Real-time status', 'Escalation'],
+    icon: Server,
+    color: 'bg-emerald-600',
+    lightColor: 'bg-emerald-600/10',
+    textColor: 'text-emerald-600',
+    borderColor: 'border-emerald-600',
+    ringColor: 'ring-emerald-600'
+  }
+};
+
+// Phase-specific demo sequences
+const PHASE_DEMO_SEQUENCES = {
+  1: [
+    { input: "Who covers body imaging today?", delay: 800 },
+    { input: "What's the pager for neuroradiology?", delay: 1500 },
+    { input: "How do I reach MRI after hours?", delay: 1500 }
+  ],
+  2: [
+    { input: "Who covers body imaging today?", delay: 800 },
+    { input: "What are the ACR appropriateness criteria for suspected PE?", delay: 1500 },
+    { input: "Is CT or MRI better for knee ligament injury?", delay: 1500 }
+  ],
+  3: [
+    { input: "What's the status of the chest CT for the patient in ICU bed 4?", delay: 800 },
+    { input: "What are the ACR appropriateness criteria for suspected PE?", delay: 1500 },
+    { input: "URGENT: Suspected aortic dissection in ER bay 2", delay: 1500 },
+    { input: "Who covers body imaging today?", delay: 1500 }
+  ]
+};
+
+// Phase-specific quick actions
+const PHASE_QUICK_ACTIONS = {
+  1: [
+    { label: 'Contacts', icon: Users, query: 'Who covers radiology today?' },
+    { label: 'After Hours', icon: Moon, query: 'How do I reach radiology after hours?' },
+    { label: 'Protocol', icon: FileText, query: 'What is the brain MRI protocol?' }
+  ],
+  2: [
+    { label: 'Contacts', icon: Users, query: 'Who covers radiology today?' },
+    { label: 'ACR Criteria', icon: BookOpen, query: 'Show me ACR appropriateness criteria' },
+    { label: 'Protocol', icon: FileText, query: 'What is the brain MRI protocol?' }
+  ],
+  3: [
+    { label: 'Check Status', icon: FileText, query: "What's the status of my patient's imaging?" },
+    { label: 'ACR Criteria', icon: BookOpen, query: 'Show me ACR appropriateness criteria' },
+    { label: 'Contacts', icon: Users, query: 'Who covers radiology today?' },
+    { label: 'Escalate', icon: Zap, query: 'URGENT: Need immediate radiology consultation' }
+  ]
+};
+
+// Default demo sequence (used as fallback)
+const DEMO_SEQUENCE = PHASE_DEMO_SEQUENCES[3];
 
 const CONTACT_DIRECTORY = {
   'General Radiology': 'Ext. 5100',
@@ -16,12 +95,8 @@ const CONTACT_DIRECTORY = {
   'After Hours/Urgent': 'Page 2400'
 };
 
-const QUICK_ACTIONS = [
-  { label: 'Check Status', icon: FileText, query: "What's the status of my patient's imaging?" },
-  { label: 'ACR Criteria', icon: BookOpen, query: 'Show me ACR appropriateness criteria' },
-  { label: 'Contacts', icon: Users, query: 'Who covers radiology today?' },
-  { label: 'Escalate', icon: Zap, query: 'URGENT: Need immediate radiology consultation' }
-];
+// Default quick actions (used as fallback)
+const QUICK_ACTIONS = PHASE_QUICK_ACTIONS[3];
 
 const RECENT_EXAMS = [
   {
@@ -194,6 +269,76 @@ function ShiftIndicator() {
   );
 }
 
+function PhaseToggle({ currentPhase, onPhaseChange, disabled }) {
+  return (
+    <div className="bg-slate-50 border-b border-slate-200 px-4 py-3">
+      <div className="flex flex-col items-center gap-2">
+        {/* Phase buttons */}
+        <div className="flex items-center gap-1 bg-white rounded-xl p-1 shadow-sm border border-slate-200">
+          {[1, 2, 3].map((phase) => {
+            const phaseConfig = PHASES[phase];
+            const Icon = phaseConfig.icon;
+            const isActive = currentPhase === phase;
+
+            return (
+              <button
+                key={phase}
+                onClick={() => onPhaseChange(phase)}
+                disabled={disabled}
+                className={`
+                  flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all
+                  ${isActive
+                    ? `${phaseConfig.color} text-white shadow-md`
+                    : 'text-slate-500 hover:text-slate-700 hover:bg-slate-100'
+                  }
+                  disabled:opacity-50 disabled:cursor-not-allowed
+                `}
+              >
+                <Icon size={16} />
+                <span className="hidden sm:inline">{phaseConfig.name}</span>
+                <span className="sm:hidden">{phase}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Phase description */}
+        <div className="flex items-center gap-2 text-xs">
+          <span className={`font-semibold ${PHASES[currentPhase].textColor}`}>
+            {PHASES[currentPhase].title}
+          </span>
+          <span className="text-slate-400">•</span>
+          <span className="text-slate-500">{PHASES[currentPhase].description}</span>
+          <span className="text-slate-400">•</span>
+          <span className="text-slate-400">{PHASES[currentPhase].timeline}</span>
+        </div>
+
+        {/* Feature pills */}
+        <div className="flex flex-wrap items-center justify-center gap-1.5">
+          {PHASES[currentPhase].features.map((feature, idx) => (
+            <span
+              key={idx}
+              className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${PHASES[currentPhase].lightColor} ${PHASES[currentPhase].textColor}`}
+            >
+              {feature}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function LockedFeatureOverlay({ featureName, unlocksIn }) {
+  return (
+    <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm flex flex-col items-center justify-center z-10 rounded-lg">
+      <Lock size={24} className="text-slate-400 mb-2" />
+      <p className="text-sm font-medium text-slate-300">{featureName}</p>
+      <p className="text-xs text-slate-500 mt-1">Available in {unlocksIn}</p>
+    </div>
+  );
+}
+
 function PatientContextBar({ patient, onClear }) {
   if (!patient) return null;
 
@@ -248,10 +393,12 @@ function RecentExamsSidebar({ exams, onSelect, selectedMrn }) {
   );
 }
 
-function QuickActions({ onAction, disabled }) {
+function QuickActions({ onAction, disabled, currentPhase = 3 }) {
+  const actions = PHASE_QUICK_ACTIONS[currentPhase] || QUICK_ACTIONS;
+
   return (
     <div className="flex flex-wrap gap-1.5 mb-3">
-      {QUICK_ACTIONS.map((action) => {
+      {actions.map((action) => {
         const Icon = action.icon;
         return (
           <button
@@ -407,16 +554,37 @@ function Message({ message, onReact }) {
   );
 }
 
-function EmptyClinicianState() {
+function EmptyClinicianState({ currentPhase = 3 }) {
+  const phaseConfig = PHASES[currentPhase];
+  const Icon = phaseConfig.icon;
+
+  const descriptions = {
+    1: "Ask about contact information, call schedules, and protocols",
+    2: "Ask about ACR appropriateness criteria, contacts, and protocols",
+    3: "Select a patient or use the quick actions below to get started"
+  };
+
   return (
     <div className="flex-1 flex flex-col items-center justify-center text-center p-8">
-      <div className="w-16 h-16 bg-duke-royal-light rounded-2xl flex items-center justify-center mb-4">
-        <Activity size={28} className="text-duke-royal" />
+      <div className={`w-16 h-16 ${phaseConfig.lightColor} rounded-2xl flex items-center justify-center mb-4`}>
+        <Icon size={28} className={phaseConfig.textColor} />
       </div>
-      <p className="text-lg font-semibold text-slate-800 mb-1">Radiology AI Assistant</p>
-      <p className="text-sm text-slate-500 max-w-xs">
-        Select a patient or use the quick actions below to get started
+      <p className="text-lg font-semibold text-slate-800 mb-1">
+        {phaseConfig.name}: {phaseConfig.title}
       </p>
+      <p className="text-sm text-slate-500 max-w-xs">
+        {descriptions[currentPhase]}
+      </p>
+      <div className="flex flex-wrap items-center justify-center gap-1.5 mt-4">
+        {phaseConfig.features.map((feature, idx) => (
+          <span
+            key={idx}
+            className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${phaseConfig.lightColor} ${phaseConfig.textColor}`}
+          >
+            {feature}
+          </span>
+        ))}
+      </div>
     </div>
   );
 }
@@ -619,10 +787,20 @@ function App() {
   const [stats, setStats] = useState({ resolved: 47, escalated: 3 });
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [isListening, setIsListening] = useState(false);
+  const [currentPhase, setCurrentPhase] = useState(3);
   const messagesEndRef = useRef(null);
   const notificationsEndRef = useRef(null);
   const notificationIdRef = useRef(0);
   const messageIdRef = useRef(0);
+
+  // Handle phase change - reset conversation
+  function handlePhaseChange(newPhase) {
+    setCurrentPhase(newPhase);
+    setMessages([]);
+    setNotifications([]);
+    setSelectedPatient(null);
+    setStats({ resolved: 47, escalated: 3 });
+  }
 
   useEffect(() => {
     requestNotificationPermission();
@@ -766,7 +944,18 @@ function App() {
     await delay(200);
     updateMessageStatus(messageIndex, 'read');
 
+    // Phase 1 & 2: Patient status queries require EMR integration (Phase III)
     if (lowerInput.includes('status') || lowerInput.includes('chest ct') || lowerInput.includes('report')) {
+      if (currentPhase < 3) {
+        await showThinking('pacs', 500);
+        addAIMessage();
+        await typeMessage(
+          "Patient-specific status queries require EMR integration, which will be available in Phase III. I can help you with contact information or imaging criteria instead."
+        );
+        incrementResolved();
+        return;
+      }
+
       await showThinking('pacs', 800);
       addAIMessage({
         dataSource: 'PACS/RIS',
@@ -787,7 +976,18 @@ function App() {
       return;
     }
 
+    // Phase 1: ACR criteria not yet available
     if (lowerInput.includes('acr') || lowerInput.includes('criteria') || lowerInput.includes('appropriateness') || /\bpe\b/.test(lowerInput)) {
+      if (currentPhase < 2) {
+        await showThinking('acr', 400);
+        addAIMessage();
+        await typeMessage(
+          "ACR Appropriateness Criteria integration will be available in Phase II. For now, I can help you with contact information and call schedules."
+        );
+        incrementResolved();
+        return;
+      }
+
       await showThinking('acr', 600);
       addAIMessage({
         dataSource: 'ACR Criteria',
@@ -806,7 +1006,18 @@ function App() {
       return;
     }
 
+    // Phase 1 & 2: Escalation requires EMR integration (Phase III)
     if (lowerInput.includes('urgent') || lowerInput.includes('stroke') || lowerInput.includes('critical') || lowerInput.includes('dissection')) {
+      if (currentPhase < 3) {
+        await showThinking('escalate', 400);
+        addAIMessage();
+        await typeMessage(
+          "Automated escalation workflows require EMR integration, available in Phase III. For urgent cases now, please call the on-call radiologist directly at Page 2400."
+        );
+        incrementResolved();
+        return;
+      }
+
       await showThinking('escalate', 400);
       addAIMessage();
 
@@ -836,7 +1047,8 @@ function App() {
       return;
     }
 
-    if (lowerInput.includes('who') || lowerInput.includes('call') || lowerInput.includes('contact') || lowerInput.includes('covers')) {
+    // All phases: Contact information is always available
+    if (lowerInput.includes('who') || lowerInput.includes('call') || lowerInput.includes('contact') || lowerInput.includes('covers') || lowerInput.includes('pager') || lowerInput.includes('reach') || lowerInput.includes('after hours')) {
       await showThinking('contacts', 500);
       addAIMessage({
         dataSource: 'Directory',
@@ -849,6 +1061,7 @@ function App() {
       return;
     }
 
+    // All phases: Protocol information is available
     if (lowerInput.includes('protocol') || lowerInput.includes('how')) {
       await showThinking('protocol', 600);
       addAIMessage();
@@ -859,11 +1072,17 @@ function App() {
       return;
     }
 
+    // Default response based on phase
     await showThinking('pacs', 400);
     addAIMessage();
-    await typeMessage(
-      "I can help with exam status, ACR criteria, contacts, escalations, and protocols. Try the quick actions or run the demo."
-    );
+
+    const phaseHelpText = currentPhase === 1
+      ? "I can help with contact information, call schedules, and protocols. Try the quick actions or run the demo."
+      : currentPhase === 2
+      ? "I can help with contact information, ACR criteria, and protocols. Try the quick actions or run the demo."
+      : "I can help with exam status, ACR criteria, contacts, escalations, and protocols. Try the quick actions or run the demo.";
+
+    await typeMessage(phaseHelpText);
   }
 
   async function handleSendMessage(inputOverride) {
@@ -889,10 +1108,18 @@ function App() {
     setIsRunningDemo(true);
     setMessages([]);
     setNotifications([]);
-    setSelectedPatient(RECENT_EXAMS[0]);
 
-    for (let i = 0; i < DEMO_SEQUENCE.length; i++) {
-      const step = DEMO_SEQUENCE[i];
+    // Only set patient context in Phase III
+    if (currentPhase === 3) {
+      setSelectedPatient(RECENT_EXAMS[0]);
+    } else {
+      setSelectedPatient(null);
+    }
+
+    const demoSequence = PHASE_DEMO_SEQUENCES[currentPhase] || DEMO_SEQUENCE;
+
+    for (let i = 0; i < demoSequence.length; i++) {
+      const step = demoSequence[i];
       await delay(step.delay);
       await typeIntoInput(step.input);
       await delay(300);
@@ -957,23 +1184,48 @@ function App() {
         </div>
       </header>
 
+      {/* Phase Toggle */}
+      <PhaseToggle
+        currentPhase={currentPhase}
+        onPhaseChange={handlePhaseChange}
+        disabled={isRunningDemo || isTyping}
+      />
+
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
-        <RecentExamsSidebar
-          exams={RECENT_EXAMS}
-          onSelect={handleSelectPatient}
-          selectedMrn={selectedPatient?.mrn}
-        />
+        {/* Patient sidebar only in Phase III */}
+        {currentPhase === 3 ? (
+          <RecentExamsSidebar
+            exams={RECENT_EXAMS}
+            onSelect={handleSelectPatient}
+            selectedMrn={selectedPatient?.mrn}
+          />
+        ) : (
+          <div className="w-56 bg-slate-100 border-r border-slate-200 flex-shrink-0 hidden xl:flex flex-col relative">
+            <div className="px-4 py-3 border-b border-slate-200">
+              <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Recent Exams</h3>
+            </div>
+            <div className="flex-1 flex items-center justify-center p-4">
+              <div className="text-center">
+                <Lock size={24} className="text-slate-300 mx-auto mb-2" />
+                <p className="text-xs text-slate-400 font-medium">Patient Context</p>
+                <p className="text-[10px] text-slate-400 mt-1">Available in Phase III</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
           {/* Clinician Chat */}
           <div className="flex-1 flex flex-col bg-slate-50 lg:border-r border-slate-200">
-            <PatientContextBar patient={selectedPatient} onClear={() => setSelectedPatient(null)} />
+            {currentPhase === 3 && (
+              <PatientContextBar patient={selectedPatient} onClear={() => setSelectedPatient(null)} />
+            )}
 
             <div className="flex-1 flex flex-col overflow-hidden">
               <div className="flex-1 overflow-y-auto p-4">
                 {messages.length === 0 && !thinkingType ? (
-                  <EmptyClinicianState />
+                  <EmptyClinicianState currentPhase={currentPhase} />
                 ) : (
                   <>
                     {messages.map((msg, idx) => (
@@ -987,7 +1239,7 @@ function App() {
 
               {/* Input */}
               <div className="p-4 bg-white border-t border-slate-200">
-                <QuickActions onAction={(q) => handleSendMessage(q)} disabled={isInputDisabled} />
+                <QuickActions onAction={(q) => handleSendMessage(q)} disabled={isInputDisabled} currentPhase={currentPhase} />
                 <div className="flex gap-2">
                   <button
                     onClick={handleVoiceInput}
@@ -1023,24 +1275,42 @@ function App() {
 
           {/* Radiologist Dashboard */}
           {showRadiologistView && (
-            <div className="flex-1 flex flex-col bg-slate-800 max-h-[40vh] lg:max-h-full">
+            <div className="flex-1 flex flex-col bg-slate-800 max-h-[40vh] lg:max-h-full relative">
               <div className="px-4 py-3 border-b border-slate-700 bg-slate-900">
                 <h2 className="text-sm font-semibold text-white flex items-center justify-between">
                   <span className="flex items-center gap-2">
                     <AlertCircle size={14} />
                     Radiologist View
+                    {currentPhase < 3 && (
+                      <span className="px-1.5 py-0.5 bg-slate-700 text-slate-400 text-[10px] rounded">
+                        Phase III
+                      </span>
+                    )}
                   </span>
-                  {notifications.length > 0 && (
+                  {currentPhase === 3 && notifications.length > 0 && (
                     <span className="px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full animate-pulse">
                       {notifications.length}
                     </span>
                   )}
                 </h2>
-                <p className="text-xs text-slate-400 mt-0.5">Only escalations appear here</p>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  {currentPhase < 3 ? 'Escalation dashboard requires EMR integration' : 'Only escalations appear here'}
+                </p>
               </div>
 
               <div className="flex-1 overflow-y-auto p-4">
-                {notifications.length === 0 ? (
+                {currentPhase < 3 ? (
+                  <div className="flex-1 flex flex-col items-center justify-center text-center p-6">
+                    <div className="w-14 h-14 bg-slate-700 rounded-xl flex items-center justify-center mb-3">
+                      <Lock size={24} className="text-slate-500" />
+                    </div>
+                    <p className="text-base font-semibold text-slate-400 mb-0.5">Escalation Dashboard</p>
+                    <p className="text-xs text-slate-500">Available in Phase III</p>
+                    <p className="text-xs text-slate-600 mt-2 max-w-[200px]">
+                      Real-time escalation routing and notification management requires EMR integration
+                    </p>
+                  </div>
+                ) : notifications.length === 0 ? (
                   <EmptyRadiologistState resolved={stats.resolved} escalated={stats.escalated} />
                 ) : (
                   notifications.map((notif) => (
