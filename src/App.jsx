@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Send, Phone, AlertCircle, CheckCircle, Clock, User, Activity, TrendingUp, Bell, Check, CheckCheck, Loader2, Database, BookOpen, PhoneCall, X, Mic, ThumbsUp, ThumbsDown, Zap, FileText, Users, Sun, Moon } from 'lucide-react';
+import { Send, Phone, AlertCircle, CheckCircle, Clock, Activity, Bell, Check, CheckCheck, Loader2, Database, BookOpen, PhoneCall, X, Mic, ThumbsUp, ThumbsDown, Zap, FileText, Users, Sun, Moon } from 'lucide-react';
 
 const DEMO_SEQUENCE = [
   { input: "What's the status of the chest CT for the patient in ICU bed 4?", delay: 800 },
@@ -24,11 +24,66 @@ const QUICK_ACTIONS = [
 ];
 
 const RECENT_EXAMS = [
-  { mrn: '847291', name: 'Johnson, M.', exam: 'CT Chest w/Contrast', status: 'In Review', priority: 'STAT' },
-  { mrn: '629104', name: 'Williams, R.', exam: 'MRI Brain w/o', status: 'Completed', priority: 'Routine' },
-  { mrn: '103847', name: 'Garcia, L.', exam: 'CT Abdomen/Pelvis', status: 'Scheduled', priority: 'Urgent' },
-  { mrn: '592016', name: 'Thompson, K.', exam: 'X-Ray Chest', status: 'Completed', priority: 'Routine' },
-  { mrn: '738492', name: 'Chen, W.', exam: 'US Abdomen', status: 'In Progress', priority: 'Routine' }
+  {
+    mrn: '847291',
+    name: 'Johnson, M.',
+    exam: 'CT Chest w/Contrast',
+    status: 'In Review',
+    priority: 'STAT',
+    location: 'ICU Bed 4',
+    time: '2:45 PM',
+    radiologist: 'Dr. Martinez',
+    findings: 'No acute findings (prelim)',
+    eta: '~30 minutes'
+  },
+  {
+    mrn: '629104',
+    name: 'Williams, R.',
+    exam: 'MRI Brain w/o',
+    status: 'Completed',
+    priority: 'Routine',
+    location: 'Neuro Floor 3B',
+    time: '11:20 AM',
+    radiologist: 'Dr. Chen',
+    findings: 'No acute intracranial abnormality. Mild chronic microvascular changes.',
+    eta: 'Final report available'
+  },
+  {
+    mrn: '103847',
+    name: 'Garcia, L.',
+    exam: 'CT Abdomen/Pelvis',
+    status: 'Scheduled',
+    priority: 'Urgent',
+    location: 'ED Bay 7',
+    time: '4:15 PM',
+    radiologist: 'Pending',
+    findings: 'Not yet performed',
+    eta: 'Scheduled for 4:15 PM'
+  },
+  {
+    mrn: '592016',
+    name: 'Thompson, K.',
+    exam: 'X-Ray Chest',
+    status: 'Completed',
+    priority: 'Routine',
+    location: 'Med-Surg 5A',
+    time: '9:30 AM',
+    radiologist: 'Dr. Kim',
+    findings: 'Clear lungs. No cardiomegaly. No pleural effusion.',
+    eta: 'Final report available'
+  },
+  {
+    mrn: '738492',
+    name: 'Chen, W.',
+    exam: 'US Abdomen',
+    status: 'In Progress',
+    priority: 'Routine',
+    location: 'Outpatient',
+    time: '3:30 PM',
+    radiologist: 'Dr. Martinez',
+    findings: 'Scan in progress',
+    eta: '~45 minutes'
+  }
 ];
 
 const THINKING_MESSAGES = {
@@ -94,18 +149,32 @@ function showBrowserNotification(title, body) {
   }
 }
 
-function PriorityBadge({ priority, size = 'sm' }) {
-  const styles = {
-    STAT: 'bg-red-500 text-white',
-    Urgent: 'bg-amber-500 text-white',
-    Routine: 'bg-slate-200 text-slate-600'
-  };
-  const sizeStyles = size === 'sm' ? 'text-[10px] px-1.5 py-0.5' : 'text-xs px-2 py-0.5';
+const PRIORITY_STYLES = {
+  STAT: 'bg-red-500 text-white',
+  Urgent: 'bg-amber-500 text-white',
+  Routine: 'bg-slate-200 text-slate-600'
+};
 
+const EXAM_STATUS_STYLES = {
+  Completed: 'text-green-600',
+  'In Review': 'text-amber-600',
+  'In Progress': 'text-blue-600'
+};
+
+function PriorityBadge({ priority, size = 'sm' }) {
+  const sizeStyles = size === 'sm' ? 'text-[10px] px-1.5 py-0.5' : 'text-xs px-2 py-0.5';
   return (
-    <span className={`font-bold rounded ${styles[priority] || styles.Routine} ${sizeStyles}`}>
+    <span className={`font-bold rounded ${PRIORITY_STYLES[priority] || PRIORITY_STYLES.Routine} ${sizeStyles}`}>
       {priority}
     </span>
+  );
+}
+
+function ExamStatus({ status }) {
+  return (
+    <p className={`text-xs font-medium ${EXAM_STATUS_STYLES[status] || 'text-slate-400'}`}>
+      {status}
+    </p>
   );
 }
 
@@ -169,13 +238,7 @@ function RecentExamsSidebar({ exams, onSelect, selectedMrn }) {
             </div>
             <p className="text-sm font-medium text-slate-800 mb-0.5">{exam.name}</p>
             <p className="text-xs text-slate-500 mb-1">{exam.exam}</p>
-            <p className={`text-xs font-medium ${
-              exam.status === 'Completed' ? 'text-green-600' :
-              exam.status === 'In Review' ? 'text-amber-600' :
-              exam.status === 'In Progress' ? 'text-blue-600' : 'text-slate-400'
-            }`}>
-              {exam.status}
-            </p>
+            <ExamStatus status={exam.status} />
           </button>
         ))}
       </div>
@@ -513,18 +576,15 @@ function App() {
 
   function handleReaction(messageId, type) {
     setMessages(prev => prev.map(msg => {
-      if (msg.id === messageId) {
-        const reactions = { ...msg.reactions };
-        if (type === 'up') {
-          reactions.up = !reactions.up;
-          reactions.down = false;
-        } else {
-          reactions.down = !reactions.down;
-          reactions.up = false;
+      if (msg.id !== messageId) return msg;
+      const isUp = type === 'up';
+      return {
+        ...msg,
+        reactions: {
+          up: isUp ? !msg.reactions?.up : false,
+          down: isUp ? false : !msg.reactions?.down
         }
-        return { ...msg, reactions };
-      }
-      return msg;
+      };
     }));
   }
 
@@ -538,16 +598,41 @@ function App() {
 
   function handleSelectPatient(patient) {
     setSelectedPatient(patient);
+    setMessages([]);
+
+    const msgId = ++messageIdRef.current;
+    setMessages([{
+      id: msgId,
+      sender: 'ai',
+      text: patient.status === 'Completed'
+        ? `${patient.exam} completed at ${patient.time}. Final report is available.`
+        : patient.status === 'Scheduled'
+        ? `${patient.exam} scheduled for ${patient.time}. Patient in ${patient.location}.`
+        : `${patient.exam} is ${patient.status.toLowerCase()}. ${patient.radiologist} is reviewing. ETA: ${patient.eta}`,
+      timestamp: Date.now(),
+      hasData: true,
+      dataSource: 'PACS/RIS',
+      dataContent: {
+        Patient: patient.name,
+        MRN: patient.mrn,
+        Exam: patient.exam,
+        Location: patient.location,
+        Time: patient.time,
+        Status: patient.status,
+        Radiologist: patient.radiologist,
+        Findings: patient.findings
+      },
+      reactions: {}
+    }]);
   }
 
   function detectPriority(input) {
     const lower = input.toLowerCase();
-    if (lower.includes('urgent') || lower.includes('stat') || lower.includes('critical') || lower.includes('emergency')) {
-      return 'STAT';
-    }
-    if (lower.includes('soon') || lower.includes('priority')) {
-      return 'Urgent';
-    }
+    const statKeywords = ['urgent', 'stat', 'critical', 'emergency'];
+    const urgentKeywords = ['soon', 'priority'];
+
+    if (statKeywords.some(kw => lower.includes(kw))) return 'STAT';
+    if (urgentKeywords.some(kw => lower.includes(kw))) return 'Urgent';
     return 'Routine';
   }
 
@@ -565,6 +650,31 @@ function App() {
     setIsTyping(false);
   }
 
+  function addAIMessage(options = {}) {
+    const msgId = ++messageIdRef.current;
+    setMessages(prev => [...prev, {
+      id: msgId,
+      sender: 'ai',
+      text: '',
+      timestamp: Date.now(),
+      hasData: Boolean(options.dataSource),
+      dataSource: options.dataSource,
+      dataContent: options.dataContent,
+      reactions: {}
+    }]);
+    return msgId;
+  }
+
+  async function showThinking(type, delayMs) {
+    setThinkingType(type);
+    await delay(delayMs);
+    setThinkingType(null);
+  }
+
+  function incrementResolved() {
+    setStats(prev => ({ ...prev, resolved: prev.resolved + 1 }));
+  }
+
   async function processMessage(input, messageIndex) {
     const lowerInput = input.toLowerCase();
 
@@ -574,17 +684,8 @@ function App() {
     updateMessageStatus(messageIndex, 'read');
 
     if (lowerInput.includes('status') || lowerInput.includes('chest ct') || lowerInput.includes('report')) {
-      setThinkingType('pacs');
-      await delay(800);
-      setThinkingType(null);
-
-      const msgId = ++messageIdRef.current;
-      setMessages(prev => [...prev, {
-        id: msgId,
-        sender: 'ai',
-        text: '',
-        timestamp: Date.now(),
-        hasData: true,
+      await showThinking('pacs', 800);
+      addAIMessage({
         dataSource: 'PACS/RIS',
         dataContent: {
           Exam: 'Chest CT with Contrast',
@@ -594,29 +695,18 @@ function App() {
           Radiologist: 'Dr. Martinez',
           Findings: 'No acute findings (prelim)',
           ETA: '~30 minutes'
-        },
-        reactions: {}
-      }]);
-
+        }
+      });
       await typeMessage(
         "Found it. The chest CT was completed at 2:45 PM and is being finalized by Dr. Martinez. Preliminary read shows no acute findings. You'll get a notification when signed."
       );
-      setStats(prev => ({ ...prev, resolved: prev.resolved + 1 }));
+      incrementResolved();
       return;
     }
 
     if (lowerInput.includes('acr') || lowerInput.includes('criteria') || lowerInput.includes('appropriateness') || /\bpe\b/.test(lowerInput)) {
-      setThinkingType('acr');
-      await delay(600);
-      setThinkingType(null);
-
-      const msgId = ++messageIdRef.current;
-      setMessages(prev => [...prev, {
-        id: msgId,
-        sender: 'ai',
-        text: '',
-        timestamp: Date.now(),
-        hasData: true,
+      await showThinking('acr', 600);
+      addAIMessage({
         dataSource: 'ACR Criteria',
         dataContent: {
           Indication: 'Suspected PE',
@@ -624,26 +714,22 @@ function App() {
           Rating: '9/9 (Usually Appropriate)',
           Notes: 'Intermediate-high probability',
           Alternative: 'D-dimer if low probability'
-        },
-        reactions: {}
-      }]);
-
+        }
+      });
       await typeMessage(
         "CTPA is recommended for suspected PE with intermediate to high clinical probability (9/9). For low-probability cases, consider D-dimer first."
       );
-      setStats(prev => ({ ...prev, resolved: prev.resolved + 1 }));
+      incrementResolved();
       return;
     }
 
     if (lowerInput.includes('urgent') || lowerInput.includes('stroke') || lowerInput.includes('critical') || lowerInput.includes('dissection')) {
-      setThinkingType('escalate');
-      await delay(400);
-      setThinkingType(null);
-
-      const msgId = ++messageIdRef.current;
-      setMessages(prev => [...prev, { id: msgId, sender: 'ai', text: '', timestamp: Date.now(), hasData: false, reactions: {} }]);
+      await showThinking('escalate', 400);
+      addAIMessage();
 
       const isDissection = lowerInput.includes('dissection');
+      const alertType = isDissection ? 'Suspected aortic dissection' : 'Stroke alert';
+
       await typeMessage(
         isDissection
           ? "Escalating now. Dr. Chen (Cardiothoracic) is being paged and will call within 2 minutes."
@@ -655,62 +741,43 @@ function App() {
         setNotifications(prev => [...prev, {
           id,
           type: 'urgent',
-          message: `${isDissection ? 'Suspected aortic dissection' : 'Stroke alert'} - immediate consultation needed`,
+          message: `${alertType} - immediate consultation needed`,
           from: 'Dr. Sarah Park - ED',
           timestamp: Date.now(),
           contact: 'Ext. 4521'
         }]);
         setStats(prev => ({ ...prev, escalated: prev.escalated + 1 }));
         playNotificationSound();
-        showBrowserNotification('Urgent Escalation', isDissection ? 'Suspected aortic dissection' : 'Stroke alert');
+        showBrowserNotification('Urgent Escalation', alertType);
       }, 300);
       return;
     }
 
     if (lowerInput.includes('who') || lowerInput.includes('call') || lowerInput.includes('contact') || lowerInput.includes('covers')) {
-      setThinkingType('contacts');
-      await delay(500);
-      setThinkingType(null);
-
-      const msgId = ++messageIdRef.current;
-      setMessages(prev => [...prev, {
-        id: msgId,
-        sender: 'ai',
-        text: '',
-        timestamp: Date.now(),
-        hasData: true,
+      await showThinking('contacts', 500);
+      addAIMessage({
         dataSource: 'Directory',
-        dataContent: CONTACT_DIRECTORY,
-        reactions: {}
-      }]);
-
+        dataContent: CONTACT_DIRECTORY
+      });
       await typeMessage(
         "Here are today's contacts. For urgent after-hours cases, use Page 2400."
       );
-      setStats(prev => ({ ...prev, resolved: prev.resolved + 1 }));
+      incrementResolved();
       return;
     }
 
     if (lowerInput.includes('protocol') || lowerInput.includes('how')) {
-      setThinkingType('protocol');
-      await delay(600);
-      setThinkingType(null);
-
-      const msgId = ++messageIdRef.current;
-      setMessages(prev => [...prev, { id: msgId, sender: 'ai', text: '', timestamp: Date.now(), hasData: false, reactions: {} }]);
+      await showThinking('protocol', 600);
+      addAIMessage();
       await typeMessage(
         "Standard brain MRI: T1, T2, FLAIR, DWI. Add T1 post-contrast for enhancement. What's the clinical scenario?"
       );
-      setStats(prev => ({ ...prev, resolved: prev.resolved + 1 }));
+      incrementResolved();
       return;
     }
 
-    setThinkingType('pacs');
-    await delay(400);
-    setThinkingType(null);
-
-    const msgId = ++messageIdRef.current;
-    setMessages(prev => [...prev, { id: msgId, sender: 'ai', text: '', timestamp: Date.now(), hasData: false, reactions: {} }]);
+    await showThinking('pacs', 400);
+    addAIMessage();
     await typeMessage(
       "I can help with exam status, ACR criteria, contacts, escalations, and protocols. Try the quick actions or run the demo."
     );
