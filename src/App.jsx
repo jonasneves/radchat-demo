@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Send, Phone, AlertCircle, CheckCircle, Clock, Activity, Bell, Check, CheckCheck, Loader2, Database, BookOpen, PhoneCall, X, Mic, ThumbsUp, ThumbsDown, Zap, FileText, Users, Sun, Moon, ChevronLeft, ChevronRight, Server, ClipboardList } from 'lucide-react';
+import { Send, Phone, AlertCircle, CheckCircle, Clock, Activity, Bell, Check, CheckCheck, Loader2, Database, BookOpen, PhoneCall, X, Mic, ThumbsUp, ThumbsDown, Zap, FileText, Users, Sun, Moon, ChevronLeft, ChevronRight, Server, ClipboardList, ArrowUp } from 'lucide-react';
 
 // Phase definitions matching DIHI proposal
 const PHASES = {
@@ -654,21 +654,21 @@ function ChatModal({ notification, onClose, onSend }) {
           ))}
         </div>
         <div className="p-4 border-t border-slate-200">
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2 pl-4 pr-1.5 py-1.5 bg-white border border-slate-200 rounded-xl focus-within:ring-2 focus-within:ring-duke-royal focus-within:border-transparent transition">
             <input
               type="text"
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSend()}
               placeholder="Type a message..."
-              className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-duke-royal"
+              className="flex-1 py-1.5 bg-transparent border-none focus:outline-none text-sm"
             />
             <button
               onClick={handleSend}
               disabled={!chatInput.trim()}
-              className="px-4 py-2 bg-duke-royal text-white rounded-lg hover:bg-duke-navy disabled:bg-slate-200 transition"
+              className="p-2 bg-duke-royal text-white rounded-lg hover:bg-duke-navy disabled:bg-slate-200 transition"
             >
-              <Send size={16} />
+              <ArrowUp size={16} strokeWidth={2.5} />
             </button>
           </div>
         </div>
@@ -1206,23 +1206,25 @@ function App() {
                   >
                     <Mic size={22} />
                   </button>
-                  <input
-                    ref={inputRef}
-                    type="text"
-                    value={userInput}
-                    onChange={(e) => setUserInput(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                    placeholder={isListening ? 'Listening...' : 'Type a message...'}
-                    className="flex-1 px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-duke-royal focus:border-transparent text-base min-h-[48px]"
-                    disabled={isInputDisabled}
-                  />
-                  <button
-                    onClick={() => handleSendMessage()}
-                    disabled={isSendDisabled}
-                    className="px-5 py-3 bg-duke-royal text-white rounded-xl hover:bg-duke-navy disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed transition min-h-[48px] min-w-[48px] flex items-center justify-center"
-                  >
-                    <Send size={22} />
-                  </button>
+                  <div className="flex-1 flex items-center gap-2 pl-5 pr-1.5 py-1.5 bg-white border border-slate-200 rounded-xl focus-within:ring-2 focus-within:ring-duke-royal focus-within:border-transparent transition">
+                    <input
+                      ref={inputRef}
+                      type="text"
+                      value={userInput}
+                      onChange={(e) => setUserInput(e.target.value)}
+                      onKeyPress={handleKeyPress}
+                      placeholder={isListening ? 'Listening...' : 'Type a message...'}
+                      className="flex-1 py-2 bg-transparent border-none focus:outline-none text-base"
+                      disabled={isInputDisabled}
+                    />
+                    <button
+                      onClick={() => handleSendMessage()}
+                      disabled={isSendDisabled}
+                      className="p-2.5 bg-duke-royal text-white rounded-lg hover:bg-duke-navy disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed transition flex items-center justify-center"
+                    >
+                      <ArrowUp size={20} strokeWidth={2.5} />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
