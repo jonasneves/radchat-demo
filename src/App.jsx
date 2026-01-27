@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Send, Phone, AlertCircle, CheckCircle, Clock, User, Activity, TrendingUp, Bell, Check, CheckCheck, Loader2, Database, BookOpen, PhoneCall, X, Mic, ThumbsUp, ThumbsDown, Zap, FileText, Users, CircleDot, Sun, Moon, ChevronRight } from 'lucide-react';
+import { Send, Phone, AlertCircle, CheckCircle, Clock, User, Activity, TrendingUp, Bell, Check, CheckCheck, Loader2, Database, BookOpen, PhoneCall, X, Mic, ThumbsUp, ThumbsDown, Zap, FileText, Users, Sun, Moon } from 'lucide-react';
 
 const DEMO_SEQUENCE = [
   { input: "What's the status of the chest CT for the patient in ICU bed 4?", delay: 800 },
@@ -32,11 +32,11 @@ const RECENT_EXAMS = [
 ];
 
 const THINKING_MESSAGES = {
-  pacs: { icon: Database, text: 'Querying PACS/RIS...' },
-  acr: { icon: BookOpen, text: 'Searching ACR guidelines...' },
-  contacts: { icon: Phone, text: 'Loading directory...' },
-  escalate: { icon: Bell, text: 'Escalating to radiologist...' },
-  protocol: { icon: Activity, text: 'Retrieving protocols...' }
+  pacs: { icon: Database, text: 'Querying PACS...' },
+  acr: { icon: BookOpen, text: 'Searching ACR...' },
+  contacts: { icon: Phone, text: 'Loading contacts...' },
+  escalate: { icon: Bell, text: 'Escalating...' },
+  protocol: { icon: Activity, text: 'Loading protocol...' }
 };
 
 function delay(ms) {
@@ -56,9 +56,9 @@ function formatRelativeTime(timestamp) {
 function getCurrentShift() {
   const hour = new Date().getHours();
   if (hour >= 7 && hour < 19) {
-    return { name: 'Day Shift', icon: Sun, onCall: 'Dr. Martinez (Body), Dr. Chen (Neuro)' };
+    return { name: 'Day', icon: Sun, onCall: 'Dr. Martinez, Dr. Chen' };
   }
-  return { name: 'Night Shift', icon: Moon, onCall: 'Dr. Williams (General), Page 2400' };
+  return { name: 'Night', icon: Moon, onCall: 'Dr. Williams' };
 }
 
 function playNotificationSound() {
@@ -94,36 +94,18 @@ function showBrowserNotification(title, body) {
   }
 }
 
-function PriorityBadge({ priority }) {
+function PriorityBadge({ priority, size = 'sm' }) {
   const styles = {
-    STAT: 'bg-red-100 text-red-700 border-red-200',
-    Urgent: 'bg-orange-100 text-orange-700 border-orange-200',
-    Routine: 'bg-slate-100 text-slate-600 border-slate-200'
+    STAT: 'bg-red-500 text-white',
+    Urgent: 'bg-amber-500 text-white',
+    Routine: 'bg-slate-200 text-slate-600'
   };
+  const sizeStyles = size === 'sm' ? 'text-[10px] px-1.5 py-0.5' : 'text-xs px-2 py-0.5';
 
   return (
-    <span className={`text-xs font-bold px-1.5 py-0.5 rounded border ${styles[priority] || styles.Routine}`}>
+    <span className={`font-bold rounded ${styles[priority] || styles.Routine} ${sizeStyles}`}>
       {priority}
     </span>
-  );
-}
-
-function SystemStatus() {
-  return (
-    <div className="flex items-center gap-3 text-xs">
-      <div className="flex items-center gap-1.5">
-        <CircleDot size={10} className="text-green-500" />
-        <span className="text-slate-600">PACS</span>
-      </div>
-      <div className="flex items-center gap-1.5">
-        <CircleDot size={10} className="text-green-500" />
-        <span className="text-slate-600">RIS</span>
-      </div>
-      <div className="flex items-center gap-1.5">
-        <CircleDot size={10} className="text-green-500" />
-        <span className="text-slate-600">HL7</span>
-      </div>
-    </div>
   );
 }
 
@@ -132,11 +114,11 @@ function ShiftIndicator() {
   const Icon = shift.icon;
 
   return (
-    <div className="flex items-center gap-2 text-xs bg-slate-100 rounded-lg px-2 py-1">
-      <Icon size={12} className="text-slate-600" />
-      <span className="font-medium text-slate-700">{shift.name}</span>
-      <span className="text-slate-400">|</span>
-      <span className="text-slate-500 truncate max-w-32">{shift.onCall}</span>
+    <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500">
+      <Icon size={14} />
+      <span>{shift.name}</span>
+      <span className="text-slate-300">•</span>
+      <span className="text-slate-400">{shift.onCall}</span>
     </div>
   );
 }
@@ -145,23 +127,21 @@ function PatientContextBar({ patient, onClear }) {
   if (!patient) return null;
 
   return (
-    <div className="bg-blue-50 border-b border-blue-200 px-4 py-2 flex items-center justify-between">
-      <div className="flex items-center gap-4 text-sm">
+    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100 px-4 py-2.5 flex items-center justify-between">
+      <div className="flex items-center gap-6 text-sm">
         <div className="flex items-center gap-2">
-          <span className="text-blue-600 font-medium">MRN:</span>
-          <span className="font-mono text-slate-800">{patient.mrn}</span>
+          <span className="text-slate-400 text-xs uppercase tracking-wide">MRN</span>
+          <span className="font-mono font-semibold text-slate-800">{patient.mrn}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-blue-600 font-medium">Patient:</span>
-          <span className="text-slate-800">{patient.name}</span>
+          <span className="font-medium text-slate-800">{patient.name}</span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-blue-600 font-medium">Exam:</span>
-          <span className="text-slate-800">{patient.exam}</span>
+        <div className="hidden sm:flex items-center gap-2">
+          <span className="text-slate-500">{patient.exam}</span>
         </div>
         <PriorityBadge priority={patient.priority} />
       </div>
-      <button onClick={onClear} className="text-blue-400 hover:text-blue-600 transition">
+      <button onClick={onClear} className="text-slate-400 hover:text-slate-600 transition p-1 hover:bg-white/50 rounded">
         <X size={16} />
       </button>
     </div>
@@ -170,24 +150,30 @@ function PatientContextBar({ patient, onClear }) {
 
 function RecentExamsSidebar({ exams, onSelect, selectedMrn }) {
   return (
-    <div className="w-48 bg-slate-50 border-r border-slate-200 flex-shrink-0 hidden xl:flex flex-col">
-      <div className="p-3 border-b border-slate-200">
-        <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wide">Recent Exams</h3>
+    <div className="w-56 bg-white border-r border-slate-200 flex-shrink-0 hidden xl:flex flex-col">
+      <div className="px-4 py-3 border-b border-slate-100">
+        <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Recent Exams</h3>
       </div>
       <div className="flex-1 overflow-y-auto">
         {exams.map((exam) => (
           <button
             key={exam.mrn}
             onClick={() => onSelect(exam)}
-            className={`w-full text-left p-3 border-b border-slate-100 hover:bg-blue-50 transition ${selectedMrn === exam.mrn ? 'bg-blue-50 border-l-2 border-l-blue-500' : ''}`}
+            className={`w-full text-left px-4 py-3 border-b border-slate-50 hover:bg-slate-50 transition ${
+              selectedMrn === exam.mrn ? 'bg-blue-50 border-l-2 border-l-blue-500' : ''
+            }`}
           >
-            <div className="flex items-center justify-between mb-1">
-              <span className="font-mono text-xs text-slate-500">{exam.mrn}</span>
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="font-mono text-xs text-slate-400">{exam.mrn}</span>
               <PriorityBadge priority={exam.priority} />
             </div>
-            <p className="text-sm font-medium text-slate-800 truncate">{exam.name}</p>
-            <p className="text-xs text-slate-500 truncate">{exam.exam}</p>
-            <p className={`text-xs mt-1 ${exam.status === 'Completed' ? 'text-green-600' : exam.status === 'In Review' ? 'text-orange-600' : 'text-slate-500'}`}>
+            <p className="text-sm font-medium text-slate-800 mb-0.5">{exam.name}</p>
+            <p className="text-xs text-slate-500 mb-1">{exam.exam}</p>
+            <p className={`text-xs font-medium ${
+              exam.status === 'Completed' ? 'text-green-600' :
+              exam.status === 'In Review' ? 'text-amber-600' :
+              exam.status === 'In Progress' ? 'text-blue-600' : 'text-slate-400'
+            }`}>
               {exam.status}
             </p>
           </button>
@@ -199,7 +185,7 @@ function RecentExamsSidebar({ exams, onSelect, selectedMrn }) {
 
 function QuickActions({ onAction, disabled }) {
   return (
-    <div className="flex flex-wrap gap-2 mb-3">
+    <div className="flex flex-wrap gap-1.5 mb-3">
       {QUICK_ACTIONS.map((action) => {
         const Icon = action.icon;
         return (
@@ -207,7 +193,7 @@ function QuickActions({ onAction, disabled }) {
             key={action.label}
             onClick={() => onAction(action.query)}
             disabled={disabled}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-blue-100 text-slate-700 hover:text-blue-700 text-xs font-medium rounded-full transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white border border-slate-200 hover:border-blue-300 hover:bg-blue-50 text-slate-600 hover:text-blue-700 text-xs font-medium rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Icon size={12} />
             {action.label}
@@ -220,18 +206,18 @@ function QuickActions({ onAction, disabled }) {
 
 function DataCard({ source, content }) {
   return (
-    <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl shadow-md border border-slate-200 overflow-hidden">
-      <div className="bg-slate-700 text-white px-4 py-2 flex items-center gap-2">
-        <Activity size={14} />
-        <span className="text-xs font-bold uppercase tracking-wide">{source}</span>
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="bg-slate-800 text-white px-3 py-2 flex items-center gap-2">
+        <Database size={12} />
+        <span className="text-xs font-semibold uppercase tracking-wide">{source}</span>
       </div>
-      <div className="px-4 py-3 space-y-2">
+      <div className="p-3 space-y-1.5">
         {Object.entries(content).map(([key, value]) => (
-          <div key={key} className="flex text-sm">
-            <span className="text-slate-500 font-medium min-w-28 capitalize text-xs">
-              {key.replace(/([A-Z])/g, ' $1').trim()}:
+          <div key={key} className="flex text-xs">
+            <span className="text-slate-400 min-w-24 capitalize">
+              {key.replace(/([A-Z])/g, ' $1').trim()}
             </span>
-            <span className="text-slate-900 font-semibold ml-2 text-xs">{value}</span>
+            <span className="text-slate-800 font-medium">{value}</span>
           </div>
         ))}
       </div>
@@ -245,13 +231,13 @@ function ThinkingIndicator({ type }) {
 
   return (
     <div className="flex justify-start mb-3">
-      <div className="bg-white rounded-2xl px-4 py-3 shadow-sm border border-slate-200 flex items-center gap-3">
-        <Icon size={16} className="text-blue-600 animate-pulse" />
-        <span className="text-sm text-slate-600">{config.text}</span>
-        <div className="flex gap-1">
-          <div className="w-1.5 h-1.5 bg-blue-600 rounded-full animate-bounce" />
-          <div className="w-1.5 h-1.5 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
-          <div className="w-1.5 h-1.5 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+      <div className="bg-white rounded-xl px-3 py-2 shadow-sm border border-slate-200 flex items-center gap-2">
+        <Icon size={14} className="text-blue-500 animate-pulse" />
+        <span className="text-xs text-slate-500">{config.text}</span>
+        <div className="flex gap-0.5">
+          <div className="w-1 h-1 bg-blue-400 rounded-full animate-bounce" />
+          <div className="w-1 h-1 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
+          <div className="w-1 h-1 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
         </div>
       </div>
     </div>
@@ -260,29 +246,29 @@ function ThinkingIndicator({ type }) {
 
 function MessageStatus({ status, time }) {
   return (
-    <div className="flex items-center gap-1.5 mt-1.5">
-      <span className="text-xs text-blue-200">{time}</span>
-      {status === 'sent' && <Check size={12} className="text-blue-300" />}
-      {status === 'delivered' && <CheckCheck size={12} className="text-blue-300" />}
-      {status === 'read' && <CheckCheck size={12} className="text-blue-100" />}
+    <div className="flex items-center gap-1 mt-1">
+      <span className="text-[10px] text-blue-200/80">{time}</span>
+      {status === 'sent' && <Check size={10} className="text-blue-300/60" />}
+      {status === 'delivered' && <CheckCheck size={10} className="text-blue-300/60" />}
+      {status === 'read' && <CheckCheck size={10} className="text-blue-100" />}
     </div>
   );
 }
 
 function MessageReactions({ messageId, reactions, onReact }) {
   return (
-    <div className="flex items-center gap-1 mt-2">
+    <div className="flex items-center gap-0.5">
       <button
         onClick={() => onReact(messageId, 'up')}
-        className={`p-1 rounded hover:bg-slate-100 transition ${reactions?.up ? 'text-green-600 bg-green-50' : 'text-slate-400'}`}
+        className={`p-1 rounded transition ${reactions?.up ? 'text-green-500 bg-green-50' : 'text-slate-300 hover:text-slate-500 hover:bg-slate-50'}`}
       >
-        <ThumbsUp size={12} />
+        <ThumbsUp size={11} />
       </button>
       <button
         onClick={() => onReact(messageId, 'down')}
-        className={`p-1 rounded hover:bg-slate-100 transition ${reactions?.down ? 'text-red-600 bg-red-50' : 'text-slate-400'}`}
+        className={`p-1 rounded transition ${reactions?.down ? 'text-red-500 bg-red-50' : 'text-slate-300 hover:text-slate-500 hover:bg-slate-50'}`}
       >
-        <ThumbsDown size={12} />
+        <ThumbsDown size={11} />
       </button>
     </div>
   );
@@ -290,15 +276,15 @@ function MessageReactions({ messageId, reactions, onReact }) {
 
 function UserMessage({ text, time, status, priority }) {
   return (
-    <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-2xl px-4 py-3 shadow-md max-w-full">
+    <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl rounded-br-md px-4 py-2.5 shadow-sm max-w-full">
       {priority && priority !== 'Routine' && (
-        <div className="mb-2">
-          <span className={`text-xs font-bold px-2 py-0.5 rounded ${priority === 'STAT' ? 'bg-red-500' : 'bg-orange-500'}`}>
+        <div className="mb-1.5">
+          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${priority === 'STAT' ? 'bg-red-500' : 'bg-amber-500'}`}>
             {priority}
           </span>
         </div>
       )}
-      <p className="text-sm leading-relaxed break-words">{text}</p>
+      <p className="text-sm leading-relaxed">{text}</p>
       <div className="flex justify-end">
         <MessageStatus status={status} time={time} />
       </div>
@@ -311,10 +297,10 @@ function AIMessage({ messageId, text, hasData, dataSource, dataContent, time, re
     <div className="flex flex-col gap-2 w-full">
       {hasData && <DataCard source={dataSource} content={dataContent} />}
       {text && (
-        <div className="bg-white rounded-2xl px-4 py-3 shadow-sm border border-slate-200">
-          <p className="text-sm leading-relaxed text-slate-700 whitespace-pre-line">{text}</p>
-          <div className="flex items-center justify-between mt-2">
-            <p className="text-xs text-slate-400">{time}</p>
+        <div className="bg-white rounded-2xl rounded-bl-md px-4 py-2.5 shadow-sm border border-slate-100">
+          <p className="text-sm leading-relaxed text-slate-700">{text}</p>
+          <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-slate-50">
+            <span className="text-[10px] text-slate-400">{time}</span>
             <MessageReactions messageId={messageId} reactions={reactions} onReact={onReact} />
           </div>
         </div>
@@ -335,8 +321,8 @@ function Message({ message, onReact }) {
   }, [message.timestamp]);
 
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-3`}>
-      <div className={`max-w-[85%] sm:max-w-[75%] ${isUser ? 'items-end' : 'items-start'} flex flex-col gap-2`}>
+    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-2`}>
+      <div className={`max-w-[85%] sm:max-w-[70%] ${isUser ? 'items-end' : 'items-start'} flex flex-col gap-1.5`}>
         {isUser ? (
           <UserMessage text={message.text} time={relativeTime} status={message.status} priority={message.priority} />
         ) : (
@@ -358,13 +344,13 @@ function Message({ message, onReact }) {
 
 function EmptyClinicianState() {
   return (
-    <div className="text-center py-8 sm:py-12">
-      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
-        <Activity size={32} className="text-blue-600" />
+    <div className="flex-1 flex flex-col items-center justify-center text-center p-8">
+      <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center mb-4">
+        <Activity size={28} className="text-blue-500" />
       </div>
-      <p className="text-base font-bold text-slate-800">Welcome to Radiology AI</p>
-      <p className="text-xs text-slate-600 mt-2 max-w-sm mx-auto px-4">
-        Select a patient from Recent Exams or use Quick Actions below
+      <p className="text-lg font-semibold text-slate-800 mb-1">Radiology AI Assistant</p>
+      <p className="text-sm text-slate-500 max-w-xs">
+        Select a patient or use the quick actions below to get started
       </p>
     </div>
   );
@@ -372,20 +358,14 @@ function EmptyClinicianState() {
 
 function StatsPanel({ resolved, escalated }) {
   return (
-    <div className="mt-6 bg-slate-700 rounded-2xl p-4 max-w-xs mx-auto shadow-sm border border-slate-600">
-      <div className="flex items-center gap-2 text-white font-bold mb-3">
-        <TrendingUp size={14} className="text-blue-400" />
-        <span className="text-xs">Today's Stats</span>
+    <div className="mt-6 grid grid-cols-2 gap-3 max-w-xs mx-auto">
+      <div className="text-center p-3 bg-slate-700/50 rounded-xl">
+        <p className="text-slate-400 text-[10px] uppercase tracking-wide mb-1">AI Resolved</p>
+        <p className="text-2xl font-bold text-blue-400">{resolved}</p>
       </div>
-      <div className="grid grid-cols-2 gap-2">
-        <div className="text-center p-2 bg-slate-600 rounded-xl border border-slate-500">
-          <p className="text-slate-300 text-xs mb-0.5">AI Resolved</p>
-          <p className="text-2xl font-bold text-blue-400">{resolved}</p>
-        </div>
-        <div className="text-center p-2 bg-slate-600 rounded-xl border border-slate-500">
-          <p className="text-slate-300 text-xs mb-0.5">Escalated</p>
-          <p className="text-2xl font-bold text-orange-400">{escalated}</p>
-        </div>
+      <div className="text-center p-3 bg-slate-700/50 rounded-xl">
+        <p className="text-slate-400 text-[10px] uppercase tracking-wide mb-1">Escalated</p>
+        <p className="text-2xl font-bold text-amber-400">{escalated}</p>
       </div>
     </div>
   );
@@ -393,13 +373,12 @@ function StatsPanel({ resolved, escalated }) {
 
 function EmptyRadiologistState({ resolved, escalated }) {
   return (
-    <div className="text-center py-8 sm:py-12">
-      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-slate-700 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
-        <CheckCircle size={32} className="text-blue-400" />
+    <div className="flex-1 flex flex-col items-center justify-center text-center p-6">
+      <div className="w-14 h-14 bg-slate-700 rounded-xl flex items-center justify-center mb-3">
+        <CheckCircle size={24} className="text-green-400" />
       </div>
-      <p className="text-base font-bold text-white">All Clear</p>
-      <p className="text-xs text-slate-400 mt-1">No pending urgent consultations</p>
-      <p className="text-xs text-slate-500 mt-1">AI is handling routine queries</p>
+      <p className="text-base font-semibold text-white mb-0.5">All Clear</p>
+      <p className="text-xs text-slate-400">No pending escalations</p>
       <StatsPanel resolved={resolved} escalated={escalated} />
     </div>
   );
@@ -408,30 +387,28 @@ function EmptyRadiologistState({ resolved, escalated }) {
 function CallbackModal({ notification, onClose }) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl">
+      <div className="bg-white rounded-2xl p-5 max-w-sm w-full shadow-2xl">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-bold text-lg text-slate-900">Calling Back</h3>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
-            <X size={20} />
+          <h3 className="font-semibold text-slate-900">Calling Back</h3>
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 p-1">
+            <X size={18} />
           </button>
         </div>
-        <div className="flex items-center gap-4 mb-6">
-          <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-            <PhoneCall size={24} className="text-green-600 animate-pulse" />
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-11 h-11 bg-green-100 rounded-full flex items-center justify-center">
+            <PhoneCall size={20} className="text-green-600 animate-pulse" />
           </div>
           <div>
-            <p className="font-medium text-slate-900">{notification.from}</p>
-            <p className="text-sm text-slate-500">{notification.contact}</p>
+            <p className="font-medium text-slate-900 text-sm">{notification.from}</p>
+            <p className="text-xs text-slate-500">{notification.contact}</p>
           </div>
         </div>
-        <div className="flex gap-3">
-          <button
-            onClick={onClose}
-            className="flex-1 px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition font-medium"
-          >
-            End Call
-          </button>
-        </div>
+        <button
+          onClick={onClose}
+          className="w-full px-4 py-2.5 bg-red-500 text-white text-sm rounded-xl hover:bg-red-600 transition font-medium"
+        >
+          End Call
+        </button>
       </div>
     </div>
   );
@@ -450,42 +427,35 @@ function NotificationCard({ notification, onAcknowledge, onCallBack }) {
 
   return (
     <div
-      className={`mb-4 border-l-4 ${isUrgent ? 'border-red-500 bg-red-50 animate-pulse' : 'border-amber-500 bg-amber-50'} rounded-r-2xl shadow-sm`}
-      style={isUrgent ? { animationDuration: '1s', animationIterationCount: '5' } : undefined}
+      className={`mb-3 rounded-xl overflow-hidden shadow-sm ${isUrgent ? 'bg-red-50 ring-1 ring-red-200 animate-pulse' : 'bg-amber-50 ring-1 ring-amber-200'}`}
+      style={isUrgent ? { animationDuration: '1.5s', animationIterationCount: '4' } : undefined}
     >
-      <div className="p-4">
-        <div className="flex items-start gap-3">
-          <div className={`w-10 h-10 ${isUrgent ? 'bg-red-500' : 'bg-amber-500'} rounded-xl flex items-center justify-center flex-shrink-0`}>
-            {isUrgent ? <AlertCircle className="text-white" size={20} /> : <Clock className="text-white" size={20} />}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className={`font-bold text-sm mb-1 ${isUrgent ? 'text-red-900' : 'text-amber-900'}`}>
-              <span className="flex items-center gap-2">
-                {isUrgent ? <Bell size={14} className="text-red-600" /> : <AlertCircle size={14} className="text-amber-600" />}
-                {isUrgent ? 'URGENT ESCALATION' : 'AI Needs Help'}
-              </span>
-            </p>
-            <p className="text-sm text-slate-700 leading-relaxed mb-2">{notification.message}</p>
-            <div className="text-xs text-slate-600 space-y-0.5 bg-white/60 rounded-lg p-2 mb-3">
-              <p><strong>From:</strong> {notification.from}</p>
-              <p><strong>Contact:</strong> {notification.contact}</p>
-              <p><strong>Time:</strong> {relativeTime}</p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => onCallBack(notification)}
-                className="px-3 py-1.5 bg-blue-600 text-white text-xs rounded-lg hover:bg-blue-700 transition flex items-center gap-1.5 shadow-sm font-medium"
-              >
-                <Phone size={12} /> Call Back
-              </button>
-              <button
-                onClick={() => onAcknowledge(notification.id)}
-                className="px-3 py-1.5 bg-slate-600 text-white text-xs rounded-lg hover:bg-slate-700 transition shadow-sm font-medium"
-              >
-                Acknowledge
-              </button>
-            </div>
-          </div>
+      <div className={`px-3 py-2 ${isUrgent ? 'bg-red-500' : 'bg-amber-500'} text-white flex items-center gap-2`}>
+        {isUrgent ? <Bell size={14} /> : <Clock size={14} />}
+        <span className="text-xs font-semibold uppercase tracking-wide">
+          {isUrgent ? 'Urgent Escalation' : 'Needs Review'}
+        </span>
+      </div>
+      <div className="p-3">
+        <p className="text-sm text-slate-700 mb-2">{notification.message}</p>
+        <div className="text-xs text-slate-500 space-y-0.5 mb-3">
+          <p><span className="text-slate-400">From:</span> {notification.from}</p>
+          <p><span className="text-slate-400">Contact:</span> {notification.contact}</p>
+          <p><span className="text-slate-400">Time:</span> {relativeTime}</p>
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={() => onCallBack(notification)}
+            className="flex-1 px-3 py-1.5 bg-blue-500 text-white text-xs rounded-lg hover:bg-blue-600 transition flex items-center justify-center gap-1.5 font-medium"
+          >
+            <Phone size={12} /> Call
+          </button>
+          <button
+            onClick={() => onAcknowledge(notification.id)}
+            className="flex-1 px-3 py-1.5 bg-slate-600 text-white text-xs rounded-lg hover:bg-slate-700 transition font-medium"
+          >
+            Acknowledge
+          </button>
         </div>
       </div>
     </div>
@@ -560,7 +530,6 @@ function App() {
 
   function handleVoiceInput() {
     setIsListening(true);
-    // Simulate voice input
     setTimeout(() => {
       setIsListening(false);
       setUserInput("What's the status of my patient's CT scan?");
@@ -616,21 +585,21 @@ function App() {
         text: '',
         timestamp: Date.now(),
         hasData: true,
-        dataSource: 'PACS/RIS Database',
+        dataSource: 'PACS/RIS',
         dataContent: {
-          examType: 'Chest CT with Contrast',
-          patientLocation: 'ICU Bed 4',
-          examTime: '2:45 PM',
-          status: 'In Review',
-          radiologist: 'Dr. Martinez',
-          findings: 'No acute findings (preliminary)',
-          eta: '~30 minutes'
+          Exam: 'Chest CT with Contrast',
+          Location: 'ICU Bed 4',
+          Time: '2:45 PM',
+          Status: 'In Review',
+          Radiologist: 'Dr. Martinez',
+          Findings: 'No acute findings (prelim)',
+          ETA: '~30 minutes'
         },
         reactions: {}
       }]);
 
       await typeMessage(
-        "Found it. The chest CT was completed at 2:45 PM and is currently being finalized by Dr. Martinez. Preliminary read shows no acute findings. You'll get a notification when the final report is signed."
+        "Found it. The chest CT was completed at 2:45 PM and is being finalized by Dr. Martinez. Preliminary read shows no acute findings. You'll get a notification when signed."
       );
       setStats(prev => ({ ...prev, resolved: prev.resolved + 1 }));
       return;
@@ -648,19 +617,19 @@ function App() {
         text: '',
         timestamp: Date.now(),
         hasData: true,
-        dataSource: 'ACR Appropriateness Criteria',
+        dataSource: 'ACR Criteria',
         dataContent: {
-          indication: 'Suspected Pulmonary Embolism',
-          procedure: 'CT Pulmonary Angiography',
-          rating: '9/9 (Usually Appropriate)',
-          notes: 'Intermediate-high clinical probability',
-          alternative: 'D-dimer if low probability'
+          Indication: 'Suspected PE',
+          Procedure: 'CT Pulmonary Angiography',
+          Rating: '9/9 (Usually Appropriate)',
+          Notes: 'Intermediate-high probability',
+          Alternative: 'D-dimer if low probability'
         },
         reactions: {}
       }]);
 
       await typeMessage(
-        "CTPA is the recommended study for suspected PE with intermediate to high clinical probability (9/9 rating). For low-probability cases, consider D-dimer first. Need the full protocol or want me to connect you with a radiologist?"
+        "CTPA is recommended for suspected PE with intermediate to high clinical probability (9/9). For low-probability cases, consider D-dimer first."
       );
       setStats(prev => ({ ...prev, resolved: prev.resolved + 1 }));
       return;
@@ -677,8 +646,8 @@ function App() {
       const isDissection = lowerInput.includes('dissection');
       await typeMessage(
         isDissection
-          ? "Escalating immediately. Dr. Chen from Cardiothoracic is being paged now and will call you within 2 minutes. Stay on the line if possible."
-          : "Code stroke activated. Neuroradiology (Dr. Chen) is being paged and will contact you within 2 minutes. CT scanner 2 is being held."
+          ? "Escalating now. Dr. Chen (Cardiothoracic) is being paged and will call within 2 minutes."
+          : "Code stroke activated. Neuroradiology is being paged. CT scanner 2 is held for you."
       );
 
       setTimeout(() => {
@@ -686,14 +655,14 @@ function App() {
         setNotifications(prev => [...prev, {
           id,
           type: 'urgent',
-          message: `URGENT: ${isDissection ? 'Suspected aortic dissection' : 'Stroke alert'} - immediate consultation needed`,
-          from: 'Dr. Sarah Park - Emergency Department',
+          message: `${isDissection ? 'Suspected aortic dissection' : 'Stroke alert'} - immediate consultation needed`,
+          from: 'Dr. Sarah Park - ED',
           timestamp: Date.now(),
           contact: 'Ext. 4521'
         }]);
         setStats(prev => ({ ...prev, escalated: prev.escalated + 1 }));
         playNotificationSound();
-        showBrowserNotification('Urgent Escalation', isDissection ? 'Suspected aortic dissection' : 'Stroke alert - immediate response needed');
+        showBrowserNotification('Urgent Escalation', isDissection ? 'Suspected aortic dissection' : 'Stroke alert');
       }, 300);
       return;
     }
@@ -710,13 +679,13 @@ function App() {
         text: '',
         timestamp: Date.now(),
         hasData: true,
-        dataSource: 'Contact Directory',
+        dataSource: 'Directory',
         dataContent: CONTACT_DIRECTORY,
         reactions: {}
       }]);
 
       await typeMessage(
-        "Here are today's contacts. For urgent after-hours cases, use Page 2400. Want me to connect you directly to any of these?"
+        "Here are today's contacts. For urgent after-hours cases, use Page 2400."
       );
       setStats(prev => ({ ...prev, resolved: prev.resolved + 1 }));
       return;
@@ -730,7 +699,7 @@ function App() {
       const msgId = ++messageIdRef.current;
       setMessages(prev => [...prev, { id: msgId, sender: 'ai', text: '', timestamp: Date.now(), hasData: false, reactions: {} }]);
       await typeMessage(
-        "Standard brain MRI includes T1, T2, FLAIR, and DWI. Add T1 post-contrast for enhancement evaluation. Protocols vary by indication—what's the clinical scenario? I can pull the specific protocol or connect you with a radiologist."
+        "Standard brain MRI: T1, T2, FLAIR, DWI. Add T1 post-contrast for enhancement. What's the clinical scenario?"
       );
       setStats(prev => ({ ...prev, resolved: prev.resolved + 1 }));
       return;
@@ -743,7 +712,7 @@ function App() {
     const msgId = ++messageIdRef.current;
     setMessages(prev => [...prev, { id: msgId, sender: 'ai', text: '', timestamp: Date.now(), hasData: false, reactions: {} }]);
     await typeMessage(
-      "I can help with exam status, ACR criteria, radiologist contacts, urgent escalations, and imaging protocols. Try the demo above to see examples, or ask about a specific case."
+      "I can help with exam status, ACR criteria, contacts, escalations, and protocols. Try the quick actions or run the demo."
     );
   }
 
@@ -809,114 +778,113 @@ function App() {
   const isSendDisabled = isTyping || !userInput.trim() || isRunningDemo || thinkingType;
 
   return (
-    <div className="w-full h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 flex flex-col">
-      {/* Top Header Bar */}
-      <div className="bg-white border-b border-slate-200 px-4 py-2 flex items-center justify-between flex-shrink-0">
-        <div className="flex items-center gap-4">
-          <h1 className="text-lg font-black text-slate-900 tracking-tight">RadChat AI</h1>
-          <SystemStatus />
-        </div>
-        <div className="flex items-center gap-3">
+    <div className="w-full h-screen bg-slate-100 flex flex-col">
+      {/* Header */}
+      <header className="bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between flex-shrink-0">
+        <div className="flex items-center gap-6">
+          <h1 className="text-xl font-bold text-slate-900">RadChat</h1>
           <ShiftIndicator />
-          <button
-            onClick={runDemo}
-            disabled={isInputDisabled}
-            className="px-3 py-1.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-xs font-bold rounded-full hover:from-blue-700 hover:to-blue-800 disabled:from-slate-400 disabled:to-slate-500 disabled:cursor-not-allowed transition shadow-md"
-          >
-            {isRunningDemo ? 'Running...' : 'Run Demo'}
-          </button>
         </div>
-      </div>
+        <button
+          onClick={runDemo}
+          disabled={isInputDisabled}
+          className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 disabled:bg-slate-300 disabled:cursor-not-allowed transition"
+        >
+          {isRunningDemo ? 'Running...' : 'Run Demo'}
+        </button>
+      </header>
 
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Recent Exams Sidebar */}
         <RecentExamsSidebar
           exams={RECENT_EXAMS}
           onSelect={handleSelectPatient}
           selectedMrn={selectedPatient?.mrn}
         />
 
-        {/* Main Chat Area */}
         <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
-          {/* Clinician Interface */}
-          <div className="flex-1 flex flex-col bg-white lg:border-r border-slate-200">
-            {/* Patient Context Bar */}
+          {/* Clinician Chat */}
+          <div className="flex-1 flex flex-col bg-slate-50 lg:border-r border-slate-200">
             <PatientContextBar patient={selectedPatient} onClear={() => setSelectedPatient(null)} />
 
-            {/* Chat Header */}
-            <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-3 border-b border-blue-800">
-              <h2 className="text-sm font-bold flex items-center gap-2">
-                <User size={16} />
-                Clinician Chat
-              </h2>
-            </div>
+            <div className="flex-1 flex flex-col overflow-hidden">
+              <div className="flex-1 overflow-y-auto p-4">
+                {messages.length === 0 && !thinkingType ? (
+                  <EmptyClinicianState />
+                ) : (
+                  <>
+                    {messages.map((msg, idx) => (
+                      <Message key={idx} message={msg} onReact={handleReaction} />
+                    ))}
+                    {thinkingType && <ThinkingIndicator type={thinkingType} />}
+                  </>
+                )}
+                <div ref={messagesEndRef} />
+              </div>
 
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-2">
-              {messages.length === 0 && !thinkingType && <EmptyClinicianState />}
-              {messages.map((msg, idx) => (
-                <Message key={idx} message={msg} onReact={handleReaction} />
-              ))}
-              {thinkingType && <ThinkingIndicator type={thinkingType} />}
-              <div ref={messagesEndRef} />
-            </div>
-
-            {/* Input Area */}
-            <div className="p-4 bg-slate-50 border-t border-slate-200">
-              <QuickActions onAction={(q) => handleSendMessage(q)} disabled={isInputDisabled} />
-              <div className="flex gap-2">
-                <button
-                  onClick={handleVoiceInput}
-                  disabled={isInputDisabled}
-                  className={`p-3 rounded-xl transition shadow-sm ${isListening ? 'bg-red-500 text-white animate-pulse' : 'bg-white border border-slate-300 text-slate-600 hover:bg-slate-100'} disabled:opacity-50`}
-                >
-                  <Mic size={18} />
-                </button>
-                <input
-                  type="text"
-                  value={userInput}
-                  onChange={(e) => setUserInput(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder={isListening ? 'Listening...' : 'Type your message...'}
-                  className="flex-1 px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                  disabled={isInputDisabled}
-                />
-                <button
-                  onClick={() => handleSendMessage()}
-                  disabled={isSendDisabled}
-                  className="px-5 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition shadow-sm"
-                >
-                  <Send size={18} />
-                </button>
+              {/* Input */}
+              <div className="p-4 bg-white border-t border-slate-200">
+                <QuickActions onAction={(q) => handleSendMessage(q)} disabled={isInputDisabled} />
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleVoiceInput}
+                    disabled={isInputDisabled}
+                    className={`p-2.5 rounded-lg transition ${
+                      isListening
+                        ? 'bg-red-500 text-white animate-pulse'
+                        : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                    } disabled:opacity-50`}
+                  >
+                    <Mic size={18} />
+                  </button>
+                  <input
+                    type="text"
+                    value={userInput}
+                    onChange={(e) => setUserInput(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder={isListening ? 'Listening...' : 'Type a message...'}
+                    className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    disabled={isInputDisabled}
+                  />
+                  <button
+                    onClick={() => handleSendMessage()}
+                    disabled={isSendDisabled}
+                    className="px-4 py-2.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed transition"
+                  >
+                    <Send size={18} />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Radiologist Dashboard */}
-          <div className="flex-1 flex flex-col bg-slate-800 max-h-[50vh] lg:max-h-full">
-            <div className="bg-slate-900 text-white p-3 border-b border-slate-700">
-              <h2 className="text-sm font-bold flex items-center gap-2">
-                <AlertCircle size={16} />
-                Radiologist Dashboard
-                {notifications.length > 0 && (
-                  <span className="ml-2 px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full animate-pulse">
-                    {notifications.length}
-                  </span>
-                )}
+          <div className="flex-1 flex flex-col bg-slate-900 max-h-[40vh] lg:max-h-full">
+            <div className="px-4 py-3 border-b border-slate-700 flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-white flex items-center gap-2">
+                <AlertCircle size={14} />
+                Radiologist View
               </h2>
+              {notifications.length > 0 && (
+                <span className="px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full animate-pulse">
+                  {notifications.length}
+                </span>
+              )}
             </div>
 
             <div className="flex-1 overflow-y-auto p-4">
-              {notifications.length === 0 && <EmptyRadiologistState resolved={stats.resolved} escalated={stats.escalated} />}
-              {notifications.map((notif) => (
-                <NotificationCard
-                  key={notif.id}
-                  notification={notif}
-                  onAcknowledge={handleAcknowledge}
-                  onCallBack={handleCallBack}
-                />
-              ))}
+              {notifications.length === 0 ? (
+                <EmptyRadiologistState resolved={stats.resolved} escalated={stats.escalated} />
+              ) : (
+                notifications.map((notif) => (
+                  <NotificationCard
+                    key={notif.id}
+                    notification={notif}
+                    onAcknowledge={handleAcknowledge}
+                    onCallBack={handleCallBack}
+                  />
+                ))
+              )}
               <div ref={notificationsEndRef} />
             </div>
           </div>
