@@ -1210,50 +1210,64 @@ function App() {
 
           {/* Radiologist Dashboard - Phase III only */}
           {currentPhase === 3 && (
-            <div className={`flex-shrink-0 flex flex-col bg-slate-800 max-h-[40vh] lg:max-h-full relative ${showRadiologistView ? 'w-96' : 'w-0'}`}>
-              {/* Toggle button on left edge */}
-              <button
-                onClick={() => setShowRadiologistView(!showRadiologistView)}
-                className="absolute -left-3 top-1/2 -translate-y-1/2 z-10 w-6 h-12 bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white rounded-l-lg flex items-center justify-center transition shadow-md"
-                title={showRadiologistView ? 'Hide Radiologist View' : 'Show Radiologist View'}
-              >
-                {showRadiologistView ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
-              </button>
-
-              {showRadiologistView && (
-                <>
-                  <div className="px-5 py-4 border-b border-slate-700 bg-slate-900">
-                    <h2 className="text-base font-semibold text-white flex items-center justify-between">
-                      <span className="flex items-center gap-2">
+            <div className={`flex-shrink-0 flex flex-col bg-slate-800 max-h-[40vh] lg:max-h-full transition-all duration-300 ${showRadiologistView ? 'w-96' : 'w-14'}`}>
+              <div className="px-4 py-4 border-b border-slate-700 bg-slate-900 flex items-center justify-between">
+                {showRadiologistView ? (
+                  <>
+                    <div>
+                      <h2 className="text-base font-semibold text-white flex items-center gap-2">
                         <AlertCircle size={18} />
                         Radiologist View
+                        {notifications.length > 0 && (
+                          <span className="px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full animate-pulse">
+                            {notifications.length}
+                          </span>
+                        )}
+                      </h2>
+                      <p className="text-sm text-slate-400 mt-1">Only escalations appear here</p>
+                    </div>
+                    <button
+                      onClick={() => setShowRadiologistView(false)}
+                      className="p-2 text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg transition"
+                      title="Collapse panel"
+                    >
+                      <ChevronRight size={20} />
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={() => setShowRadiologistView(true)}
+                    className="w-full flex flex-col items-center gap-2 text-slate-400 hover:text-white transition py-2"
+                    title="Expand Radiologist View"
+                  >
+                    <ChevronLeft size={20} />
+                    <AlertCircle size={20} />
+                    {notifications.length > 0 && (
+                      <span className="px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full animate-pulse">
+                        {notifications.length}
                       </span>
-                      {notifications.length > 0 && (
-                        <span className="px-2.5 py-1 bg-red-500 text-white text-sm font-bold rounded-full animate-pulse">
-                          {notifications.length}
-                        </span>
-                      )}
-                    </h2>
-                    <p className="text-sm text-slate-400 mt-1">Only escalations appear here</p>
-                  </div>
-
-                  <div className="flex-1 overflow-y-auto p-4">
-                    {notifications.length === 0 ? (
-                      <EmptyRadiologistState resolved={stats.resolved} escalated={stats.escalated} />
-                    ) : (
-                      notifications.map((notif) => (
-                        <NotificationCard
-                          key={notif.id}
-                          notification={notif}
-                          onAcknowledge={handleAcknowledge}
-                          onCallBack={handleCallBack}
-                          onChat={handleChat}
-                        />
-                      ))
                     )}
-                    <div ref={notificationsEndRef} />
-                  </div>
-                </>
+                  </button>
+                )}
+              </div>
+
+              {showRadiologistView && (
+                <div className="flex-1 overflow-y-auto p-4">
+                  {notifications.length === 0 ? (
+                    <EmptyRadiologistState resolved={stats.resolved} escalated={stats.escalated} />
+                  ) : (
+                    notifications.map((notif) => (
+                      <NotificationCard
+                        key={notif.id}
+                        notification={notif}
+                        onAcknowledge={handleAcknowledge}
+                        onCallBack={handleCallBack}
+                        onChat={handleChat}
+                      />
+                    ))
+                  )}
+                  <div ref={notificationsEndRef} />
+                </div>
               )}
             </div>
           )}
