@@ -749,6 +749,25 @@ function App() {
   const notificationsEndRef = useRef(null);
   const notificationIdRef = useRef(0);
   const messageIdRef = useRef(0);
+  const inputRef = useRef(null);
+
+  // Focus input when typing anywhere
+  useEffect(() => {
+    function handleKeyDown(e) {
+      // Ignore if already focused on an input, textarea, or button
+      if (['INPUT', 'TEXTAREA', 'BUTTON'].includes(document.activeElement?.tagName)) return;
+      // Ignore modifier keys alone
+      if (['Control', 'Alt', 'Meta', 'Shift', 'Tab', 'Escape'].includes(e.key)) return;
+      // Ignore if input is disabled
+      if (isTyping || isRunningDemo || thinkingType) return;
+
+      // Focus the input
+      inputRef.current?.focus();
+    }
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isTyping, isRunningDemo, thinkingType]);
 
   // Handle phase change - reset conversation
   function handlePhaseChange(newPhase) {
@@ -1188,6 +1207,7 @@ function App() {
                     <Mic size={22} />
                   </button>
                   <input
+                    ref={inputRef}
                     type="text"
                     value={userInput}
                     onChange={(e) => setUserInput(e.target.value)}
