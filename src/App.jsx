@@ -150,15 +150,16 @@ function showBrowserNotification(title, body) {
 }
 
 const PRIORITY_STYLES = {
-  STAT: 'bg-red-500 text-white',
-  Urgent: 'bg-amber-500 text-white',
-  Routine: 'bg-slate-200 text-slate-600'
+  STAT: 'bg-red-600 text-white',
+  Urgent: 'bg-amber-600 text-white',
+  Routine: 'bg-duke-hatteras text-duke-graphite'
 };
 
 const EXAM_STATUS_STYLES = {
-  Completed: 'text-green-600',
-  'In Review': 'text-amber-600',
-  'In Progress': 'text-blue-600'
+  Completed: 'text-duke-piedmont',
+  'In Review': 'text-duke-copper',
+  'In Progress': 'text-duke-shale',
+  Scheduled: 'text-duke-graphite'
 };
 
 function PriorityBadge({ priority, size = 'sm' }) {
@@ -196,7 +197,7 @@ function PatientContextBar({ patient, onClear }) {
   if (!patient) return null;
 
   return (
-    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100 px-4 py-2.5 flex items-center justify-between">
+    <div className="bg-duke-royal-light border-b border-duke-royal/10 px-4 py-2.5 flex items-center justify-between">
       <div className="flex items-center gap-6 text-sm">
         <div className="flex items-center gap-2">
           <span className="text-slate-400 text-xs uppercase tracking-wide">MRN</span>
@@ -228,8 +229,8 @@ function RecentExamsSidebar({ exams, onSelect, selectedMrn }) {
           <button
             key={exam.mrn}
             onClick={() => onSelect(exam)}
-            className={`w-full text-left px-4 py-3 border-b border-slate-50 hover:bg-slate-50 transition ${
-              selectedMrn === exam.mrn ? 'bg-blue-50 border-l-2 border-l-blue-500' : ''
+            className={`w-full text-left px-4 py-3 border-b border-slate-50 hover:bg-duke-hatteras/50 transition ${
+              selectedMrn === exam.mrn ? 'bg-duke-royal-light border-l-2 border-l-duke-royal' : ''
             }`}
           >
             <div className="flex items-center justify-between mb-1.5">
@@ -256,7 +257,7 @@ function QuickActions({ onAction, disabled }) {
             key={action.label}
             onClick={() => onAction(action.query)}
             disabled={disabled}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white border border-slate-200 hover:border-blue-300 hover:bg-blue-50 text-slate-600 hover:text-blue-700 text-xs font-medium rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white border border-slate-200 hover:border-duke-royal/40 hover:bg-duke-royal-light text-slate-600 hover:text-duke-royal text-xs font-medium rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Icon size={12} />
             {action.label}
@@ -270,7 +271,7 @@ function QuickActions({ onAction, disabled }) {
 function DataCard({ source, content }) {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-      <div className="bg-slate-800 text-white px-3 py-2 flex items-center gap-2">
+      <div className="bg-duke-navy text-white px-3 py-2 flex items-center gap-2">
         <Database size={12} />
         <span className="text-xs font-semibold uppercase tracking-wide">{source}</span>
       </div>
@@ -295,12 +296,12 @@ function ThinkingIndicator({ type }) {
   return (
     <div className="flex justify-start mb-3">
       <div className="bg-white rounded-xl px-3 py-2 shadow-sm border border-slate-200 flex items-center gap-2">
-        <Icon size={14} className="text-blue-500 animate-pulse" />
+        <Icon size={14} className="text-duke-royal animate-pulse" />
         <span className="text-xs text-slate-500">{config.text}</span>
         <div className="flex gap-0.5">
-          <div className="w-1 h-1 bg-blue-400 rounded-full animate-bounce" />
-          <div className="w-1 h-1 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
-          <div className="w-1 h-1 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+          <div className="w-1 h-1 bg-duke-royal rounded-full animate-bounce" />
+          <div className="w-1 h-1 bg-duke-royal rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
+          <div className="w-1 h-1 bg-duke-royal rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
         </div>
       </div>
     </div>
@@ -339,10 +340,10 @@ function MessageReactions({ messageId, reactions, onReact }) {
 
 function UserMessage({ text, time, status, priority }) {
   return (
-    <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl rounded-br-md px-4 py-2.5 shadow-sm max-w-full">
+    <div className="bg-gradient-to-r from-duke-royal to-duke-navy text-white rounded-2xl rounded-br-md px-4 py-2.5 shadow-sm max-w-full">
       {priority && priority !== 'Routine' && (
         <div className="mb-1.5">
-          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${priority === 'STAT' ? 'bg-red-500' : 'bg-amber-500'}`}>
+          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${priority === 'STAT' ? 'bg-red-600' : 'bg-amber-600'}`}>
             {priority}
           </span>
         </div>
@@ -408,8 +409,8 @@ function Message({ message, onReact }) {
 function EmptyClinicianState() {
   return (
     <div className="flex-1 flex flex-col items-center justify-center text-center p-8">
-      <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center mb-4">
-        <Activity size={28} className="text-blue-500" />
+      <div className="w-16 h-16 bg-duke-royal-light rounded-2xl flex items-center justify-center mb-4">
+        <Activity size={28} className="text-duke-royal" />
       </div>
       <p className="text-lg font-semibold text-slate-800 mb-1">Radiology AI Assistant</p>
       <p className="text-sm text-slate-500 max-w-xs">
@@ -422,13 +423,13 @@ function EmptyClinicianState() {
 function StatsPanel({ resolved, escalated }) {
   return (
     <div className="mt-6 grid grid-cols-2 gap-3 max-w-xs mx-auto">
-      <div className="text-center p-3 bg-slate-700/50 rounded-xl">
+      <div className="text-center p-3 bg-white/10 rounded-xl">
         <p className="text-slate-400 text-[10px] uppercase tracking-wide mb-1">AI Resolved</p>
-        <p className="text-2xl font-bold text-blue-400">{resolved}</p>
+        <p className="text-2xl font-bold text-duke-shale">{resolved}</p>
       </div>
-      <div className="text-center p-3 bg-slate-700/50 rounded-xl">
+      <div className="text-center p-3 bg-white/10 rounded-xl">
         <p className="text-slate-400 text-[10px] uppercase tracking-wide mb-1">Escalated</p>
-        <p className="text-2xl font-bold text-amber-400">{escalated}</p>
+        <p className="text-2xl font-bold text-duke-persimmon">{escalated}</p>
       </div>
     </div>
   );
@@ -437,7 +438,7 @@ function StatsPanel({ resolved, escalated }) {
 function EmptyRadiologistState({ resolved, escalated }) {
   return (
     <div className="flex-1 flex flex-col items-center justify-center text-center p-6">
-      <div className="w-14 h-14 bg-slate-700 rounded-xl flex items-center justify-center mb-3">
+      <div className="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center mb-3">
         <CheckCircle size={24} className="text-green-400" />
       </div>
       <p className="text-base font-semibold text-white mb-0.5">All Clear</p>
@@ -509,7 +510,7 @@ function NotificationCard({ notification, onAcknowledge, onCallBack }) {
         <div className="flex gap-2">
           <button
             onClick={() => onCallBack(notification)}
-            className="flex-1 px-3 py-1.5 bg-blue-500 text-white text-xs rounded-lg hover:bg-blue-600 transition flex items-center justify-center gap-1.5 font-medium"
+            className="flex-1 px-3 py-1.5 bg-duke-royal text-white text-xs rounded-lg hover:bg-duke-navy transition flex items-center justify-center gap-1.5 font-medium"
           >
             <Phone size={12} /> Call
           </button>
@@ -845,7 +846,7 @@ function App() {
   const isSendDisabled = isTyping || !userInput.trim() || isRunningDemo || thinkingType;
 
   return (
-    <div className="w-full h-screen bg-slate-100 flex flex-col">
+    <div className="w-full h-screen bg-duke-whisper flex flex-col">
       {/* Header */}
       <header className="bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-6">
@@ -855,7 +856,7 @@ function App() {
         <button
           onClick={runDemo}
           disabled={isInputDisabled}
-          className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 disabled:bg-slate-300 disabled:cursor-not-allowed transition"
+          className="px-4 py-2 bg-duke-royal text-white text-sm font-medium rounded-lg hover:bg-duke-navy disabled:bg-slate-300 disabled:cursor-not-allowed transition"
         >
           {isRunningDemo ? 'Running...' : 'Run Demo'}
         </button>
@@ -910,13 +911,13 @@ function App() {
                     onChange={(e) => setUserInput(e.target.value)}
                     onKeyPress={handleKeyPress}
                     placeholder={isListening ? 'Listening...' : 'Type a message...'}
-                    className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-duke-royal focus:border-transparent text-sm"
                     disabled={isInputDisabled}
                   />
                   <button
                     onClick={() => handleSendMessage()}
                     disabled={isSendDisabled}
-                    className="px-4 py-2.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed transition"
+                    className="px-4 py-2.5 bg-duke-royal text-white rounded-lg hover:bg-duke-navy disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed transition"
                   >
                     <Send size={18} />
                   </button>
@@ -926,8 +927,8 @@ function App() {
           </div>
 
           {/* Radiologist Dashboard */}
-          <div className="flex-1 flex flex-col bg-slate-900 max-h-[40vh] lg:max-h-full">
-            <div className="px-4 py-3 border-b border-slate-700 flex items-center justify-between">
+          <div className="flex-1 flex flex-col bg-duke-navy max-h-[40vh] lg:max-h-full">
+            <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
               <h2 className="text-sm font-semibold text-white flex items-center gap-2">
                 <AlertCircle size={14} />
                 Radiologist View
