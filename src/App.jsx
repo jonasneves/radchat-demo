@@ -443,6 +443,7 @@ function EmptyRadiologistState({ resolved, escalated }) {
       </div>
       <p className="text-base font-semibold text-white mb-0.5">All Clear</p>
       <p className="text-xs text-slate-400">No pending escalations</p>
+      <p className="text-xs text-slate-500 mt-1">AI is handling routine queries</p>
       <StatsPanel resolved={resolved} escalated={escalated} />
     </div>
   );
@@ -478,7 +479,79 @@ function CallbackModal({ notification, onClose }) {
   );
 }
 
-function NotificationCard({ notification, onAcknowledge, onCallBack }) {
+function ChatModal({ notification, onClose, onSend }) {
+  const [chatInput, setChatInput] = useState('');
+  const [chatMessages, setChatMessages] = useState([
+    { sender: 'system', text: `Chat started with ${notification.from}` }
+  ]);
+
+  function handleSend() {
+    if (!chatInput.trim()) return;
+    setChatMessages(prev => [...prev, { sender: 'radiologist', text: chatInput }]);
+    setChatInput('');
+    setTimeout(() => {
+      setChatMessages(prev => [...prev, { sender: 'clinician', text: 'Thank you, on my way to review the images now.' }]);
+    }, 1000);
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl flex flex-col max-h-[80vh]">
+        <div className="flex items-center justify-between p-4 border-b border-slate-200">
+          <div>
+            <h3 className="font-semibold text-slate-900">Chat</h3>
+            <p className="text-xs text-slate-500">{notification.from}</p>
+          </div>
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 p-1">
+            <X size={18} />
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto p-4 space-y-3 min-h-[200px]">
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-slate-700">
+            <p className="font-medium text-amber-800 text-xs mb-1">Escalation</p>
+            {notification.message}
+          </div>
+          {chatMessages.map((msg, idx) => (
+            <div key={idx} className={`flex ${msg.sender === 'radiologist' ? 'justify-end' : 'justify-start'}`}>
+              {msg.sender === 'system' ? (
+                <p className="text-xs text-slate-400 text-center w-full">{msg.text}</p>
+              ) : (
+                <div className={`max-w-[80%] px-3 py-2 rounded-xl text-sm ${
+                  msg.sender === 'radiologist'
+                    ? 'bg-duke-royal text-white'
+                    : 'bg-slate-100 text-slate-700'
+                }`}>
+                  {msg.text}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+        <div className="p-4 border-t border-slate-200">
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={chatInput}
+              onChange={(e) => setChatInput(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+              placeholder="Type a message..."
+              className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-duke-royal"
+            />
+            <button
+              onClick={handleSend}
+              disabled={!chatInput.trim()}
+              className="px-4 py-2 bg-duke-royal text-white rounded-lg hover:bg-duke-navy disabled:bg-slate-200 transition"
+            >
+              <Send size={16} />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function NotificationCard({ notification, onAcknowledge, onCallBack, onChat }) {
   const isUrgent = notification.type === 'urgent';
   const [relativeTime, setRelativeTime] = useState(formatRelativeTime(notification.timestamp));
 
@@ -515,6 +588,12 @@ function NotificationCard({ notification, onAcknowledge, onCallBack }) {
             <Phone size={12} /> Call
           </button>
           <button
+            onClick={() => onChat(notification)}
+            className="flex-1 px-3 py-1.5 bg-duke-shale text-white text-xs rounded-lg hover:bg-duke-royal transition flex items-center justify-center gap-1.5 font-medium"
+          >
+            <Send size={12} /> Chat
+          </button>
+          <button
             onClick={() => onAcknowledge(notification.id)}
             className="flex-1 px-3 py-1.5 bg-slate-600 text-white text-xs rounded-lg hover:bg-slate-700 transition font-medium"
           >
@@ -534,6 +613,7 @@ function App() {
   const [isTyping, setIsTyping] = useState(false);
   const [isRunningDemo, setIsRunningDemo] = useState(false);
   const [callbackNotification, setCallbackNotification] = useState(null);
+  const [chatNotification, setChatNotification] = useState(null);
   const [stats, setStats] = useState({ resolved: 47, escalated: 3 });
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [isListening, setIsListening] = useState(false);
@@ -842,6 +922,10 @@ function App() {
     setCallbackNotification(notification);
   }
 
+  function handleChat(notification) {
+    setChatNotification(notification);
+  }
+
   const isInputDisabled = isTyping || isRunningDemo || thinkingType;
   const isSendDisabled = isTyping || !userInput.trim() || isRunningDemo || thinkingType;
 
@@ -927,17 +1011,20 @@ function App() {
           </div>
 
           {/* Radiologist Dashboard */}
-          <div className="flex-1 flex flex-col bg-duke-navy max-h-[40vh] lg:max-h-full">
-            <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
-              <h2 className="text-sm font-semibold text-white flex items-center gap-2">
-                <AlertCircle size={14} />
-                Radiologist View
-              </h2>
-              {notifications.length > 0 && (
-                <span className="px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full animate-pulse">
-                  {notifications.length}
+          <div className="flex-1 flex flex-col bg-slate-800 max-h-[40vh] lg:max-h-full">
+            <div className="px-4 py-3 border-b border-slate-700 bg-slate-900">
+              <h2 className="text-sm font-semibold text-white flex items-center justify-between">
+                <span className="flex items-center gap-2">
+                  <AlertCircle size={14} />
+                  Radiologist View
                 </span>
-              )}
+                {notifications.length > 0 && (
+                  <span className="px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full animate-pulse">
+                    {notifications.length}
+                  </span>
+                )}
+              </h2>
+              <p className="text-xs text-slate-400 mt-0.5">Only escalations appear here</p>
             </div>
 
             <div className="flex-1 overflow-y-auto p-4">
@@ -950,6 +1037,7 @@ function App() {
                     notification={notif}
                     onAcknowledge={handleAcknowledge}
                     onCallBack={handleCallBack}
+                    onChat={handleChat}
                   />
                 ))
               )}
@@ -963,6 +1051,13 @@ function App() {
         <CallbackModal
           notification={callbackNotification}
           onClose={() => setCallbackNotification(null)}
+        />
+      )}
+
+      {chatNotification && (
+        <ChatModal
+          notification={chatNotification}
+          onClose={() => setChatNotification(null)}
         />
       )}
     </div>
