@@ -211,13 +211,13 @@ function DataCard({ source, content }) {
         <Database size={12} />
         <span className="text-xs font-semibold uppercase tracking-wide">{source}</span>
       </div>
-      <div className="p-3 space-y-2">
+      <div className="p-3 grid grid-cols-2 gap-3">
         {Object.entries(content).map(([key, value]) => (
-          <div key={key} className="flex justify-between items-baseline gap-4 text-xs border-b border-slate-50 pb-2 last:border-0 last:pb-0">
-            <span className="text-slate-600 capitalize">
+          <div key={key}>
+            <p className="text-[10px] text-slate-400 uppercase tracking-wide mb-0.5">
               {key.replace(/([A-Z])/g, ' $1').trim()}
-            </span>
-            <span className="text-slate-900 font-semibold text-right">{value}</span>
+            </p>
+            <p className="text-sm text-slate-800 font-medium">{value}</p>
           </div>
         ))}
       </div>
