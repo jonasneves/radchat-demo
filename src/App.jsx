@@ -310,16 +310,6 @@ function PhaseToggle({ currentPhase, onPhaseChange, disabled }) {
             {currentConfig.description}
           </span>
         </div>
-        <div className="hidden xl:flex items-center gap-2">
-          {currentConfig.features.map((feature, idx) => (
-            <span
-              key={idx}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium ${currentConfig.lightColor} ${currentConfig.textColor}`}
-            >
-              {feature}
-            </span>
-          ))}
-        </div>
       </div>
     </div>
   );
