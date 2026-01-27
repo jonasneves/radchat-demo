@@ -235,9 +235,9 @@ const EXAM_STATUS_STYLES = {
 };
 
 function PriorityBadge({ priority, size = 'sm' }) {
-  const sizeStyles = size === 'sm' ? 'text-[10px] px-1.5 py-0.5' : 'text-xs px-2 py-0.5';
+  const sizeStyles = size === 'sm' ? 'text-xs px-2 py-0.5' : 'text-sm px-2.5 py-1';
   return (
-    <span className={`font-bold rounded ${PRIORITY_STYLES[priority] || PRIORITY_STYLES.Routine} ${sizeStyles}`}>
+    <span className={`font-bold rounded-md ${PRIORITY_STYLES[priority] || PRIORITY_STYLES.Routine} ${sizeStyles}`}>
       {priority}
     </span>
   );
@@ -245,7 +245,7 @@ function PriorityBadge({ priority, size = 'sm' }) {
 
 function ExamStatus({ status }) {
   return (
-    <p className={`text-xs font-medium ${EXAM_STATUS_STYLES[status] || 'text-slate-400'}`}>
+    <p className={`text-sm font-medium ${EXAM_STATUS_STYLES[status] || 'text-slate-400'}`}>
       {status}
     </p>
   );
@@ -256,19 +256,19 @@ function ShiftIndicator() {
   const Icon = shift.icon;
 
   return (
-    <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500">
+    <div className="hidden lg:flex items-center gap-2 text-sm text-slate-500 bg-slate-50 px-4 py-2 rounded-xl">
       <span className="text-slate-400">On Call:</span>
-      <Icon size={14} />
+      <Icon size={16} />
       <span>{shift.name} Shift</span>
       <span className="text-slate-300">•</span>
-      <span className="text-slate-600 font-medium">{shift.onCall}</span>
+      <span className="text-slate-700 font-medium">{shift.onCall}</span>
     </div>
   );
 }
 
 function PhaseToggle({ currentPhase, onPhaseChange, disabled }) {
   return (
-    <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-1">
+    <div className="flex items-center gap-1 bg-slate-100 rounded-xl p-1">
       {[1, 2, 3].map((phase) => {
         const phaseConfig = PHASES[phase];
         const Icon = phaseConfig.icon;
@@ -280,7 +280,7 @@ function PhaseToggle({ currentPhase, onPhaseChange, disabled }) {
             onClick={() => onPhaseChange(phase)}
             disabled={disabled}
             className={`
-              flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all
+              flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all min-h-[44px]
               ${isActive
                 ? `${phaseConfig.color} text-white shadow-sm`
                 : 'text-slate-500 hover:text-slate-700 hover:bg-white'
@@ -288,7 +288,7 @@ function PhaseToggle({ currentPhase, onPhaseChange, disabled }) {
               disabled:opacity-50 disabled:cursor-not-allowed
             `}
           >
-            <Icon size={14} />
+            <Icon size={18} />
             <span className="hidden sm:inline">{phaseConfig.name}</span>
             <span className="sm:hidden">{phase}</span>
           </button>
@@ -325,25 +325,25 @@ function PatientContextBar({ patient, onClear }) {
 
 function RecentExamsSidebar({ exams, onSelect, selectedMrn }) {
   return (
-    <div className="w-56 bg-white border-r border-slate-200 flex-shrink-0 hidden xl:flex flex-col">
-      <div className="px-4 py-3 border-b border-slate-100">
-        <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Recent Exams</h3>
+    <div className="w-64 bg-white border-r border-slate-200 flex-shrink-0 hidden xl:flex flex-col">
+      <div className="px-5 py-4 border-b border-slate-100">
+        <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider">Recent Exams</h3>
       </div>
       <div className="flex-1 overflow-y-auto">
         {exams.map((exam) => (
           <button
             key={exam.mrn}
             onClick={() => onSelect(exam)}
-            className={`w-full text-left px-4 py-3 border-b border-slate-50 hover:bg-duke-hatteras/50 transition ${
-              selectedMrn === exam.mrn ? 'bg-duke-royal-light border-l-2 border-l-duke-royal' : ''
+            className={`w-full text-left px-5 py-4 border-b border-slate-50 hover:bg-duke-hatteras/50 transition ${
+              selectedMrn === exam.mrn ? 'bg-duke-royal-light border-l-3 border-l-duke-royal' : ''
             }`}
           >
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="font-mono text-xs text-slate-400">{exam.mrn}</span>
+            <div className="flex items-center justify-between mb-2">
+              <span className="font-mono text-sm text-slate-400">{exam.mrn}</span>
               <PriorityBadge priority={exam.priority} />
             </div>
-            <p className="text-sm font-medium text-slate-800 mb-0.5">{exam.name}</p>
-            <p className="text-xs text-slate-500 mb-1">{exam.exam}</p>
+            <p className="text-base font-medium text-slate-800 mb-1">{exam.name}</p>
+            <p className="text-sm text-slate-500 mb-1.5">{exam.exam}</p>
             <ExamStatus status={exam.status} />
           </button>
         ))}
@@ -356,7 +356,7 @@ function QuickActions({ onAction, disabled, currentPhase = 3 }) {
   const actions = PHASE_QUICK_ACTIONS[currentPhase] || QUICK_ACTIONS;
 
   return (
-    <div className="flex flex-wrap gap-1.5 mb-3">
+    <div className="flex flex-wrap gap-2 mb-4">
       {actions.map((action) => {
         const Icon = action.icon;
         return (
@@ -364,9 +364,9 @@ function QuickActions({ onAction, disabled, currentPhase = 3 }) {
             key={action.label}
             onClick={() => onAction(action.query)}
             disabled={disabled}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white border border-slate-200 hover:border-duke-royal/40 hover:bg-duke-royal-light text-slate-600 hover:text-duke-royal text-xs font-medium rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 hover:border-duke-royal/40 hover:bg-duke-royal-light text-slate-600 hover:text-duke-royal text-sm font-medium rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]"
           >
-            <Icon size={12} />
+            <Icon size={18} />
             {action.label}
           </button>
         );
@@ -377,18 +377,18 @@ function QuickActions({ onAction, disabled, currentPhase = 3 }) {
 
 function DataCard({ source, content }) {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-      <div className="bg-duke-navy text-white px-3 py-2 flex items-center gap-2">
-        <Database size={12} />
-        <span className="text-xs font-semibold uppercase tracking-wide">{source}</span>
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="bg-duke-navy text-white px-4 py-2.5 flex items-center gap-2">
+        <Database size={16} />
+        <span className="text-sm font-semibold uppercase tracking-wide">{source}</span>
       </div>
-      <div className="p-3 grid grid-cols-2 gap-3">
+      <div className="p-4 grid grid-cols-2 gap-4">
         {Object.entries(content).map(([key, value]) => (
           <div key={key}>
-            <p className="text-[10px] text-slate-400 uppercase tracking-wide mb-0.5">
+            <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">
               {key.replace(/([A-Z])/g, ' $1').trim()}
             </p>
-            <p className="text-sm text-slate-800 font-medium">{value}</p>
+            <p className="text-base text-slate-800 font-medium">{value}</p>
           </div>
         ))}
       </div>
@@ -401,14 +401,14 @@ function ThinkingIndicator({ type }) {
   const Icon = config.icon;
 
   return (
-    <div className="flex justify-start mb-3">
-      <div className="bg-white rounded-xl px-3 py-2 shadow-sm border border-slate-200 flex items-center gap-2">
-        <Icon size={14} className="text-duke-royal animate-pulse" />
-        <span className="text-xs text-slate-500">{config.text}</span>
-        <div className="flex gap-0.5">
-          <div className="w-1 h-1 bg-duke-royal rounded-full animate-bounce" />
-          <div className="w-1 h-1 bg-duke-royal rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
-          <div className="w-1 h-1 bg-duke-royal rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+    <div className="flex justify-start mb-4">
+      <div className="bg-white rounded-xl px-4 py-3 shadow-sm border border-slate-200 flex items-center gap-3">
+        <Icon size={18} className="text-duke-royal animate-pulse" />
+        <span className="text-sm text-slate-500">{config.text}</span>
+        <div className="flex gap-1">
+          <div className="w-1.5 h-1.5 bg-duke-royal rounded-full animate-bounce" />
+          <div className="w-1.5 h-1.5 bg-duke-royal rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
+          <div className="w-1.5 h-1.5 bg-duke-royal rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
         </div>
       </div>
     </div>
@@ -428,18 +428,18 @@ function MessageStatus({ status, time }) {
 
 function MessageReactions({ messageId, reactions, onReact }) {
   return (
-    <div className="flex items-center gap-0.5">
+    <div className="flex items-center gap-1">
       <button
         onClick={() => onReact(messageId, 'up')}
-        className={`p-1 rounded transition ${reactions?.up ? 'text-green-500 bg-green-50' : 'text-slate-300 hover:text-slate-500 hover:bg-slate-50'}`}
+        className={`p-1.5 rounded-lg transition ${reactions?.up ? 'text-green-500 bg-green-50' : 'text-slate-300 hover:text-slate-500 hover:bg-slate-50'}`}
       >
-        <ThumbsUp size={11} />
+        <ThumbsUp size={16} />
       </button>
       <button
         onClick={() => onReact(messageId, 'down')}
-        className={`p-1 rounded transition ${reactions?.down ? 'text-red-500 bg-red-50' : 'text-slate-300 hover:text-slate-500 hover:bg-slate-50'}`}
+        className={`p-1.5 rounded-lg transition ${reactions?.down ? 'text-red-500 bg-red-50' : 'text-slate-300 hover:text-slate-500 hover:bg-slate-50'}`}
       >
-        <ThumbsDown size={11} />
+        <ThumbsDown size={16} />
       </button>
     </div>
   );
@@ -447,15 +447,15 @@ function MessageReactions({ messageId, reactions, onReact }) {
 
 function UserMessage({ text, time, status, priority }) {
   return (
-    <div className="bg-gradient-to-r from-duke-royal to-duke-navy text-white rounded-2xl rounded-br-md px-4 py-2.5 shadow-sm max-w-full">
+    <div className="bg-gradient-to-r from-duke-royal to-duke-navy text-white rounded-2xl rounded-br-md px-5 py-3 shadow-sm max-w-full">
       {priority && priority !== 'Routine' && (
-        <div className="mb-1.5">
-          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${priority === 'STAT' ? 'bg-red-600' : 'bg-amber-600'}`}>
+        <div className="mb-2">
+          <span className={`text-xs font-bold px-2 py-1 rounded ${priority === 'STAT' ? 'bg-red-600' : 'bg-amber-600'}`}>
             {priority}
           </span>
         </div>
       )}
-      <p className="text-sm leading-relaxed">{text}</p>
+      <p className="text-base leading-relaxed">{text}</p>
       <div className="flex justify-end">
         <MessageStatus status={status} time={time} />
       </div>
@@ -465,13 +465,13 @@ function UserMessage({ text, time, status, priority }) {
 
 function AIMessage({ messageId, text, hasData, dataSource, dataContent, time, reactions, onReact }) {
   return (
-    <div className="flex flex-col gap-2 w-full">
+    <div className="flex flex-col gap-3 w-full">
       {hasData && <DataCard source={dataSource} content={dataContent} />}
       {text && (
-        <div className="bg-white rounded-2xl rounded-bl-md px-4 py-2.5 shadow-sm border border-slate-100">
-          <p className="text-sm leading-relaxed text-slate-700">{text}</p>
-          <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-slate-50">
-            <span className="text-[10px] text-slate-400">{time}</span>
+        <div className="bg-white rounded-2xl rounded-bl-md px-5 py-3 shadow-sm border border-slate-100">
+          <p className="text-base leading-relaxed text-slate-700">{text}</p>
+          <div className="flex items-center justify-between mt-3 pt-2 border-t border-slate-100">
+            <span className="text-xs text-slate-400">{time}</span>
             <MessageReactions messageId={messageId} reactions={reactions} onReact={onReact} />
           </div>
         </div>
@@ -492,8 +492,8 @@ function Message({ message, onReact }) {
   }, [message.timestamp]);
 
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-2`}>
-      <div className={`max-w-[85%] sm:max-w-[70%] ${isUser ? 'items-end' : 'items-start'} flex flex-col gap-1.5`}>
+    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}>
+      <div className={`max-w-[85%] sm:max-w-[70%] ${isUser ? 'items-end' : 'items-start'} flex flex-col gap-2`}>
         {isUser ? (
           <UserMessage text={message.text} time={relativeTime} status={message.status} priority={message.priority} />
         ) : (
@@ -516,13 +516,13 @@ function Message({ message, onReact }) {
 function EmptyClinicianState() {
   return (
     <div className="flex-1 flex flex-col items-center justify-center text-center p-8">
-      <div className="w-14 h-14 bg-duke-royal/10 rounded-2xl flex items-center justify-center mb-3">
-        <Activity size={24} className="text-duke-royal" />
+      <div className="w-20 h-20 bg-duke-royal/10 rounded-2xl flex items-center justify-center mb-4">
+        <Activity size={36} className="text-duke-royal" />
       </div>
-      <p className="text-base font-medium text-slate-700 mb-1">
+      <p className="text-xl font-semibold text-slate-800 mb-2">
         How can I help?
       </p>
-      <p className="text-sm text-slate-400">
+      <p className="text-base text-slate-500">
         Use the quick actions below or type a message
       </p>
     </div>
@@ -1101,30 +1101,30 @@ function App() {
   return (
     <div className="w-full h-screen bg-duke-whisper flex flex-col">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-4 py-2.5 flex items-center justify-between flex-shrink-0">
-        <div className="flex items-center gap-4">
-          <h1 className="text-lg font-bold text-slate-900">RadChat</h1>
+      <header className="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between flex-shrink-0">
+        <div className="flex items-center gap-6">
+          <h1 className="text-xl font-bold text-slate-900">RadChat</h1>
           <PhaseToggle
             currentPhase={currentPhase}
             onPhaseChange={handlePhaseChange}
             disabled={isRunningDemo || isTyping}
           />
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <ShiftIndicator />
           <button
             onClick={runDemo}
             disabled={isInputDisabled}
-            className="px-3 py-1.5 bg-duke-royal text-white text-xs font-medium rounded-lg hover:bg-duke-navy disabled:bg-slate-300 disabled:cursor-not-allowed transition"
+            className="px-5 py-2.5 bg-duke-royal text-white text-sm font-medium rounded-xl hover:bg-duke-navy disabled:bg-slate-300 disabled:cursor-not-allowed transition min-h-[44px]"
           >
             {isRunningDemo ? 'Running...' : 'Run Demo'}
           </button>
           <button
             onClick={() => setShowRadiologistView(!showRadiologistView)}
-            className="p-1.5 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition"
+            className="p-2.5 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition min-h-[44px] min-w-[44px] flex items-center justify-center"
             title={showRadiologistView ? 'Hide Radiologist View' : 'Show Radiologist View'}
           >
-            {showRadiologistView ? <PanelRightClose size={18} /> : <PanelRight size={18} />}
+            {showRadiologistView ? <PanelRightClose size={22} /> : <PanelRight size={22} />}
           </button>
         </div>
       </header>
@@ -1163,19 +1163,19 @@ function App() {
               </div>
 
               {/* Input */}
-              <div className="p-4 bg-white border-t border-slate-200">
+              <div className="p-5 bg-white border-t border-slate-200">
                 <QuickActions onAction={(q) => handleSendMessage(q)} disabled={isInputDisabled} currentPhase={currentPhase} />
-                <div className="flex gap-2">
+                <div className="flex gap-3">
                   <button
                     onClick={handleVoiceInput}
                     disabled={isInputDisabled}
-                    className={`p-2.5 rounded-lg transition ${
+                    className={`p-3 rounded-xl transition min-h-[48px] min-w-[48px] flex items-center justify-center ${
                       isListening
                         ? 'bg-red-500 text-white animate-pulse'
                         : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
                     } disabled:opacity-50`}
                   >
-                    <Mic size={18} />
+                    <Mic size={22} />
                   </button>
                   <input
                     type="text"
@@ -1183,15 +1183,15 @@ function App() {
                     onChange={(e) => setUserInput(e.target.value)}
                     onKeyPress={handleKeyPress}
                     placeholder={isListening ? 'Listening...' : 'Type a message...'}
-                    className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-duke-royal focus:border-transparent text-sm"
+                    className="flex-1 px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-duke-royal focus:border-transparent text-base min-h-[48px]"
                     disabled={isInputDisabled}
                   />
                   <button
                     onClick={() => handleSendMessage()}
                     disabled={isSendDisabled}
-                    className="px-4 py-2.5 bg-duke-royal text-white rounded-lg hover:bg-duke-navy disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed transition"
+                    className="px-5 py-3 bg-duke-royal text-white rounded-xl hover:bg-duke-navy disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed transition min-h-[48px] min-w-[48px] flex items-center justify-center"
                   >
-                    <Send size={18} />
+                    <Send size={22} />
                   </button>
                 </div>
               </div>
@@ -1200,20 +1200,20 @@ function App() {
 
           {/* Radiologist Dashboard - Phase III only */}
           {showRadiologistView && currentPhase === 3 && (
-            <div className="w-80 flex-shrink-0 flex flex-col bg-slate-800 max-h-[40vh] lg:max-h-full">
-              <div className="px-4 py-3 border-b border-slate-700 bg-slate-900">
-                <h2 className="text-sm font-semibold text-white flex items-center justify-between">
+            <div className="w-96 flex-shrink-0 flex flex-col bg-slate-800 max-h-[40vh] lg:max-h-full">
+              <div className="px-5 py-4 border-b border-slate-700 bg-slate-900">
+                <h2 className="text-base font-semibold text-white flex items-center justify-between">
                   <span className="flex items-center gap-2">
-                    <AlertCircle size={14} />
+                    <AlertCircle size={18} />
                     Radiologist View
                   </span>
                   {notifications.length > 0 && (
-                    <span className="px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full animate-pulse">
+                    <span className="px-2.5 py-1 bg-red-500 text-white text-sm font-bold rounded-full animate-pulse">
                       {notifications.length}
                     </span>
                   )}
                 </h2>
-                <p className="text-xs text-slate-400 mt-0.5">Only escalations appear here</p>
+                <p className="text-sm text-slate-400 mt-1">Only escalations appear here</p>
               </div>
 
               <div className="flex-1 overflow-y-auto p-4">
