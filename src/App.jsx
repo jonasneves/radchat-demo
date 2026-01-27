@@ -300,20 +300,21 @@ function PhaseToggle({ currentPhase, onPhaseChange, disabled }) {
       </div>
 
       {/* Phase info */}
-      <div className="hidden md:flex items-center gap-3">
+      <div className="hidden md:flex items-center gap-4">
+        <div className="h-8 w-px bg-slate-200" />
         <div className="flex flex-col">
           <span className={`text-sm font-semibold ${currentConfig.textColor}`}>
             {currentConfig.title}
           </span>
-          <span className="text-xs text-slate-400">
+          <span className="text-xs text-slate-500">
             {currentConfig.description}
           </span>
         </div>
-        <div className="hidden lg:flex items-center gap-1.5">
+        <div className="hidden xl:flex items-center gap-2">
           {currentConfig.features.map((feature, idx) => (
             <span
               key={idx}
-              className={`px-2.5 py-1 rounded-lg text-xs font-medium ${currentConfig.lightColor} ${currentConfig.textColor}`}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium ${currentConfig.lightColor} ${currentConfig.textColor}`}
             >
               {feature}
             </span>
@@ -542,13 +543,13 @@ function Message({ message, onReact }) {
 function EmptyClinicianState() {
   return (
     <div className="flex-1 flex flex-col items-center justify-center text-center p-8">
-      <div className="w-20 h-20 bg-duke-royal/10 rounded-2xl flex items-center justify-center mb-4">
-        <Activity size={36} className="text-duke-royal" />
+      <div className="w-24 h-24 bg-duke-royal/10 rounded-3xl flex items-center justify-center mb-6">
+        <Activity size={44} className="text-duke-royal" />
       </div>
-      <p className="text-xl font-semibold text-slate-800 mb-2">
+      <p className="text-2xl font-semibold text-slate-800 mb-2">
         How can I help?
       </p>
-      <p className="text-base text-slate-500">
+      <p className="text-lg text-slate-500">
         Use the quick actions below or type a message
       </p>
     </div>
@@ -557,14 +558,14 @@ function EmptyClinicianState() {
 
 function StatsPanel({ resolved, escalated }) {
   return (
-    <div className="mt-6 grid grid-cols-2 gap-3 max-w-xs mx-auto">
-      <div className="text-center p-3 bg-white/10 rounded-xl">
-        <p className="text-slate-400 text-[10px] uppercase tracking-wide mb-1">AI Resolved</p>
-        <p className="text-2xl font-bold text-duke-shale">{resolved}</p>
+    <div className="mt-8 grid grid-cols-2 gap-4 max-w-xs mx-auto">
+      <div className="text-center p-4 bg-white/10 rounded-xl">
+        <p className="text-slate-400 text-xs uppercase tracking-wide mb-2">AI Resolved</p>
+        <p className="text-3xl font-bold text-duke-shale">{resolved}</p>
       </div>
-      <div className="text-center p-3 bg-white/10 rounded-xl">
-        <p className="text-slate-400 text-[10px] uppercase tracking-wide mb-1">Escalated</p>
-        <p className="text-2xl font-bold text-duke-persimmon">{escalated}</p>
+      <div className="text-center p-4 bg-white/10 rounded-xl">
+        <p className="text-slate-400 text-xs uppercase tracking-wide mb-2">Escalated</p>
+        <p className="text-3xl font-bold text-duke-persimmon">{escalated}</p>
       </div>
     </div>
   );
@@ -573,12 +574,12 @@ function StatsPanel({ resolved, escalated }) {
 function EmptyRadiologistState({ resolved, escalated }) {
   return (
     <div className="flex-1 flex flex-col items-center justify-center text-center p-6">
-      <div className="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center mb-3">
-        <CheckCircle size={24} className="text-green-400" />
+      <div className="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center mb-4">
+        <CheckCircle size={32} className="text-green-400" />
       </div>
-      <p className="text-base font-semibold text-white mb-0.5">All Clear</p>
-      <p className="text-xs text-slate-400">No pending escalations</p>
-      <p className="text-xs text-slate-500 mt-1">AI is handling routine queries</p>
+      <p className="text-xl font-semibold text-white mb-1">All Clear</p>
+      <p className="text-sm text-slate-400">No pending escalations</p>
+      <p className="text-sm text-slate-500 mt-1">AI is handling routine queries</p>
       <StatsPanel resolved={resolved} escalated={escalated} />
     </div>
   );
