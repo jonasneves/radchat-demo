@@ -1261,7 +1261,6 @@ function App() {
                     title="Expand Radiologist View"
                   >
                     <ChevronLeft size={20} />
-                    <AlertCircle size={20} />
                     {notifications.length > 0 && (
                       <span className="px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full animate-pulse">
                         {notifications.length}
