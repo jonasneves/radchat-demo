@@ -702,10 +702,7 @@ function App() {
     <div className="w-full h-screen flex flex-col" style={{ backgroundColor: DUKE.hatteras }}>
       {/* Control Bar */}
       <header className="px-6 py-3 flex-shrink-0 flex items-center justify-between" style={{ backgroundColor: DUKE.navy }}>
-        <div className="flex items-center gap-4">
-          <h1 className="text-lg font-bold text-white">DukeRad Chat</h1>
-          <PhaseToggle currentPhase={currentPhase} onPhaseChange={handlePhaseChange} disabled={isRunningDemo || isTyping} dark />
-        </div>
+        <h1 className="text-lg font-bold text-white">DukeRad Chat</h1>
         <div className="flex items-center gap-4">
           {currentPhase === 3 && notifications.length > 0 && (
             <button onClick={() => setShowEscalations(!showEscalations)} className="relative p-2 rounded-lg transition hover:bg-white/10">
