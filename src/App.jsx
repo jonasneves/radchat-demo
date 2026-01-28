@@ -1,14 +1,17 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Phone, AlertCircle, CheckCircle, Clock, Activity, Bell, Check, CheckCheck, Database, BookOpen, X, ThumbsUp, ThumbsDown, Zap, FileText, Users, Sun, Moon, Server, ClipboardList, ArrowUp, ArrowDown, Bot, Send } from 'lucide-react';
+import { Phone, AlertCircle, CheckCircle, Clock, Activity, Bell, Check, CheckCheck, Database, BookOpen, X, ThumbsUp, ThumbsDown, Zap, FileText, Users, Sun, Moon, Server, ClipboardList, ArrowUp, ArrowDown, Send } from 'lucide-react';
 
 // Duke Brand Colors
 const DUKE = {
   navy: '#012169',
   royal: '#00539B',
   copper: '#C84E00',
+  copperLight: '#FEF3E8',
+  copperMuted: '#B34500',
   persimmon: '#E89923',
   piedmont: '#A1B70D',
   shale: '#0577B1',
+  hatteras: '#E2E6ED',
 };
 
 // Phase definitions
@@ -142,7 +145,7 @@ if (typeof document !== 'undefined' && !document.getElementById(styleId)) {
 
 function PhaseToggle({ currentPhase, onPhaseChange, disabled }) {
   return (
-    <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100">
+    <div className="flex items-center gap-1 p-1 rounded-xl" style={{ backgroundColor: DUKE.hatteras }}>
       {[1, 2, 3].map((phase) => {
         const config = PHASES[phase];
         const Icon = config.icon;
@@ -189,9 +192,9 @@ function ThinkingIndicator({ type }) {
   return (
     <div className="flex items-start gap-3 animate-slide-up">
       <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${DUKE.royal}15` }}>
-        <Bot size={16} style={{ color: DUKE.royal }} />
+        <Activity size={16} style={{ color: DUKE.royal }} />
       </div>
-      <div className="bg-slate-100 rounded-2xl rounded-tl-sm px-4 py-3 flex items-center gap-3">
+      <div className="rounded-2xl rounded-tl-sm px-4 py-3 flex items-center gap-3" style={{ backgroundColor: DUKE.hatteras }}>
         <Icon size={16} style={{ color: DUKE.royal }} className="animate-pulse" />
         <span className="text-sm text-slate-500">{config.text}</span>
         <div className="flex gap-1">
@@ -237,14 +240,14 @@ function AIMessage({ messageId, text, hasData, dataSource, dataContent, time, re
   return (
     <div className="flex items-start gap-3 animate-slide-up">
       <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${DUKE.royal}15` }}>
-        <Bot size={16} style={{ color: DUKE.royal }} />
+        <Activity size={16} style={{ color: DUKE.royal }} />
       </div>
       <div className="flex flex-col gap-2 max-w-[85%]">
         {hasData && <DataCard source={dataSource} content={dataContent} />}
         {text && (
-          <div className="bg-slate-100 rounded-2xl rounded-tl-sm px-4 py-2.5">
+          <div className="rounded-2xl rounded-tl-sm px-4 py-2.5" style={{ backgroundColor: DUKE.hatteras }}>
             <p className="text-sm leading-relaxed text-slate-700 whitespace-pre-wrap">{text}</p>
-            <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-slate-200">
+            <div className="flex items-center justify-between mt-2 pt-1.5" style={{ borderTop: `1px solid ${DUKE.royal}20` }}>
               <span className="text-[10px] text-slate-400">{time}</span>
               <MessageReactions messageId={messageId} reactions={reactions} onReact={onReact} />
             </div>
@@ -258,7 +261,7 @@ function AIMessage({ messageId, text, hasData, dataSource, dataContent, time, re
 function TimeGroupHeader({ label }) {
   return (
     <div className="flex items-center justify-center my-4">
-      <span className="text-xs text-slate-400 bg-white px-3 py-1 rounded-full border border-slate-200">{label}</span>
+      <span className="text-xs text-slate-400 px-3 py-1 rounded-full" style={{ backgroundColor: DUKE.hatteras }}>{label}</span>
     </div>
   );
 }
@@ -288,20 +291,21 @@ function EmptyState({ currentPhase, onPromptClick, disabled }) {
   const config = PHASES[currentPhase];
   const prompts = EXAMPLE_PROMPTS[currentPhase];
   return (
-    <div className="flex-1 flex flex-col items-center justify-center text-center p-8">
-      <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4" style={{ backgroundColor: `${DUKE.royal}15` }}>
-        <Bot size={32} style={{ color: DUKE.royal }} />
+    <div className="flex-1 flex flex-col items-center justify-center text-center px-6 py-12">
+      <div className="w-14 h-14 rounded-full flex items-center justify-center mb-5" style={{ backgroundColor: `${DUKE.royal}12` }}>
+        <Activity size={28} style={{ color: DUKE.royal }} />
       </div>
-      <h2 className="text-xl font-semibold text-slate-800 mb-1">DukeRad Chat</h2>
-      <p className="text-slate-500 text-sm mb-1">{config.title}</p>
-      <p className="text-xs text-slate-400 mb-6 max-w-sm">{config.description}</p>
-      <div className="flex flex-wrap justify-center gap-2 max-w-md">
+      <h2 className="text-lg font-semibold text-slate-800 mb-1">DukeRad Chat</h2>
+      <p className="text-slate-500 text-sm">{config.title}</p>
+      <p className="text-xs text-slate-400 mt-1 mb-8">{config.description}</p>
+      <div className="w-full max-w-sm space-y-2">
         {prompts.map((prompt, i) => (
           <button
             key={i}
             onClick={() => onPromptClick(prompt)}
             disabled={disabled}
-            className="px-3 py-2 text-sm bg-white border border-slate-200 rounded-full hover:border-slate-300 hover:bg-slate-50 text-slate-600 transition disabled:opacity-50"
+            className="w-full px-4 py-3 text-sm text-left rounded-xl transition disabled:opacity-50 hover:bg-slate-50"
+            style={{ backgroundColor: DUKE.hatteras + '60', color: DUKE.navy }}
           >
             {prompt}
           </button>
@@ -368,14 +372,14 @@ function EscalationPanel({ notifications, stats, onAcknowledge, onReply }) {
   return (
     <div className="space-y-3">
       {notifications.map((notif) => (
-        <div key={notif.id} className="bg-red-50 rounded-xl overflow-hidden border border-red-200">
+        <div key={notif.id} className="rounded-xl overflow-hidden" style={{ backgroundColor: DUKE.copperLight, border: `1px solid ${DUKE.copper}40` }}>
           <div className="p-3">
             <div className="flex items-start gap-2">
-              <div className="w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center flex-shrink-0">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: DUKE.copper }}>
                 <Bell className="text-white" size={14} />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold text-red-900 mb-0.5">URGENT</p>
+                <p className="text-xs font-semibold mb-0.5" style={{ color: DUKE.copperMuted }}>URGENT</p>
                 <p className="text-sm text-slate-700 mb-1">{notif.message}</p>
                 <p className="text-[10px] text-slate-500">{notif.from} • {notif.contact}</p>
               </div>
@@ -383,7 +387,7 @@ function EscalationPanel({ notifications, stats, onAcknowledge, onReply }) {
 
             {/* Chat history */}
             {chatHistory[notif.id]?.length > 0 && (
-              <div className="mt-3 pt-3 border-t border-red-200 space-y-2">
+              <div className="mt-3 pt-3 space-y-2" style={{ borderTop: `1px solid ${DUKE.copper}30` }}>
                 {chatHistory[notif.id].map((msg, i) => (
                   <div key={i} className={`flex ${msg.sender === 'radiologist' ? 'justify-end' : 'justify-start'}`}>
                     <div className={`px-2.5 py-1.5 rounded-lg text-xs max-w-[80%] ${msg.sender === 'radiologist' ? 'text-white' : 'bg-white text-slate-700'}`} style={msg.sender === 'radiologist' ? { backgroundColor: DUKE.royal } : undefined}>
@@ -396,7 +400,7 @@ function EscalationPanel({ notifications, stats, onAcknowledge, onReply }) {
 
             {/* Reply input */}
             {replyTo === notif.id ? (
-              <div className="mt-3 pt-3 border-t border-red-200">
+              <div className="mt-3 pt-3" style={{ borderTop: `1px solid ${DUKE.copper}30` }}>
                 <div className="flex gap-2">
                   <input
                     type="text"
@@ -686,7 +690,7 @@ function App() {
   }
 
   return (
-    <div className="w-full h-screen flex flex-col bg-slate-100">
+    <div className="w-full h-screen flex flex-col" style={{ backgroundColor: DUKE.hatteras }}>
       {/* Header */}
       <header className="bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-4">
@@ -755,8 +759,7 @@ function App() {
                     e.target.style.height = Math.min(e.target.scrollHeight, 128) + 'px';
                   }}
                 />
-                <div className="flex items-center gap-2 pb-1">
-                  <span className="text-[10px] text-slate-400 hidden sm:block">⏎ to send</span>
+                <div className="flex items-center pb-1">
                   <button
                     onClick={() => handleSendMessage()}
                     disabled={isInputDisabled || !userInput.trim()}
