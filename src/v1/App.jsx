@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Send, Phone, AlertCircle, CheckCircle, Clock, User, Activity, TrendingUp, Bell, Check, CheckCheck, Database, BookOpen, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { Send, Phone, AlertCircle, CheckCircle, Clock, User, Activity, TrendingUp, Bell, Check, CheckCheck, Database, BookOpen, ThumbsUp, ThumbsDown, ArrowUp } from 'lucide-react';
 
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -476,7 +476,7 @@ const RadiologyAssistantPOC = () => {
 
             {/* Input Area */}
             <div className="p-6 bg-white border-t border-slate-200 rounded-bl-3xl">
-              <div className="flex gap-3">
+              <div className="flex-1 flex items-center gap-2 pl-5 pr-1.5 py-1.5 bg-white border border-slate-300 rounded-full focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition">
                 <input
                   ref={inputRef}
                   type="text"
@@ -484,15 +484,15 @@ const RadiologyAssistantPOC = () => {
                   onChange={(e) => setUserInput(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                   placeholder="Type your message..."
-                  className="flex-1 px-5 py-3.5 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                  className="flex-1 py-2.5 bg-transparent border-none focus:outline-none text-sm"
                   disabled={isInputDisabled}
                 />
                 <button
                   onClick={handleSendMessage}
                   disabled={isInputDisabled || !userInput.trim()}
-                  className="px-6 py-3.5 bg-blue-600 text-white rounded-2xl hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition shadow-sm"
+                  className="p-2.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition"
                 >
-                  <Send size={20} />
+                  <ArrowUp size={20} strokeWidth={2.5} />
                 </button>
               </div>
             </div>
