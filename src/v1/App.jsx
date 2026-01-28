@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Send, Phone, AlertCircle, CheckCircle, Clock, User, Activity, TrendingUp, Bell, Check, CheckCheck, Database, BookOpen, ThumbsUp, ThumbsDown, ArrowUp } from 'lucide-react';
+import { Send, Phone, AlertCircle, CheckCircle, Clock, User, Activity, TrendingUp, Bell, Check, CheckCheck, Database, BookOpen, ThumbsUp, ThumbsDown, ArrowUp, FileText, Users } from 'lucide-react';
 
 // Duke Brand Colors
 const DUKE = {
   navy: '#012169',
   royal: '#00539B',
   copper: '#C84E00',
+  copperLight: '#FEF3E8',
+  copperMuted: '#B34500',
   persimmon: '#E89923',
   piedmont: '#A1B70D',
   eno: '#339898',
@@ -13,6 +15,13 @@ const DUKE = {
   hatteras: '#E2E6ED',
   whisper: '#F3F2F1',
 };
+
+const EXAMPLE_PROMPTS = [
+  { text: "Status of my patient's chest CT?", icon: FileText },
+  { text: "ACR criteria for suspected PE?", icon: BookOpen },
+  { text: "Who covers neuroradiology today?", icon: Users },
+  { text: "URGENT: Suspected stroke", icon: AlertCircle },
+];
 
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -390,25 +399,30 @@ const RadiologyAssistantPOC = () => {
   const isInputDisabled = isTyping || isRunningDemo || thinkingType;
 
   return (
-    <div className="w-full h-screen p-4" style={{ backgroundColor: DUKE.whisper }}>
-      <div className="max-w-7xl mx-auto h-full flex flex-col">
-        {/* Header */}
-        <div className="text-center mb-3">
-          <h1 className="text-2xl font-black mb-1 tracking-tight" style={{ color: DUKE.navy }}>
-            DukeRad Chat
-          </h1>
-          <button
-            onClick={runDemo}
-            disabled={isInputDisabled}
-            className="px-4 py-1.5 text-white text-xs font-bold rounded-full hover:opacity-90 disabled:bg-slate-400 disabled:cursor-not-allowed transition shadow-md"
-            style={{ backgroundColor: isInputDisabled ? undefined : DUKE.royal }}
-          >
-            {isRunningDemo ? 'Running Demo...' : 'Run Interactive Demo'}
-          </button>
+    <div className="w-full h-screen flex flex-col" style={{ backgroundColor: DUKE.hatteras }}>
+      {/* Control Bar */}
+      <header className="px-6 py-3 flex-shrink-0" style={{ backgroundColor: DUKE.navy }}>
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <h1 className="text-lg font-bold text-white">DukeRad Chat</h1>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={runDemo}
+              disabled={isInputDisabled}
+              className="px-4 py-1.5 text-sm font-medium rounded-full transition disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ backgroundColor: 'white', color: DUKE.navy }}
+            >
+              {isRunningDemo ? 'Running...' : 'Run Demo'}
+            </button>
+            <a href="https://radchat.neevs.io/" target="_blank" rel="noopener noreferrer" className="text-sm text-white/80 hover:text-white transition">
+              Live version →
+            </a>
+          </div>
         </div>
+      </header>
 
-        {/* Main Split View */}
-        <div className="flex-1 flex gap-0 overflow-hidden shadow-2xl rounded-3xl">
+      {/* Main Split View */}
+      <div className="flex-1 flex overflow-hidden p-4">
+        <div className="max-w-7xl mx-auto w-full flex gap-0 shadow-2xl rounded-3xl overflow-hidden">
           {/* LEFT SIDE - Clinician Chat */}
           <div className="flex-1 flex flex-col bg-slate-50 rounded-l-3xl">
             <div className="text-white p-6 rounded-tl-3xl" style={{ backgroundColor: DUKE.royal }}>
@@ -421,22 +435,36 @@ const RadiologyAssistantPOC = () => {
 
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
               {messages.length === 0 && !thinkingType && (
-                <div className="text-center py-20">
-                  <div className="w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-sm" style={{ backgroundColor: `${DUKE.royal}20` }}>
-                    <Activity size={48} style={{ color: DUKE.royal }} />
+                <div className="text-center py-12">
+                  <div className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-5" style={{ backgroundColor: `${DUKE.royal}15` }}>
+                    <Activity size={40} style={{ color: DUKE.royal }} />
                   </div>
                   <p className="text-lg font-bold text-slate-800">Welcome to DukeRad Chat</p>
-                  <p className="text-sm text-slate-600 mt-2 max-w-md mx-auto">
-                    Ask me questions about imaging orders, exam status, protocols, or contact information
+                  <p className="text-sm text-slate-500 mt-2 mb-8 max-w-sm mx-auto">
+                    Ask questions about imaging orders, exam status, protocols, or contact information
                   </p>
-                  <div className="mt-8 space-y-2 text-xs text-slate-500 max-w-md mx-auto">
-                    <p className="text-left">Try asking:</p>
-                    <ul className="text-left space-y-1 ml-4 list-disc">
-                      <li>"What's the status of my chest CT?"</li>
-                      <li>"Show me ACR criteria for PE"</li>
-                      <li>"Who covers neuroradiology today?"</li>
-                      <li>"URGENT: Suspected stroke"</li>
-                    </ul>
+                  <div className="max-w-md mx-auto">
+                    <p className="text-xs text-slate-400 uppercase tracking-wide mb-3">Try asking</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {EXAMPLE_PROMPTS.map((prompt, i) => {
+                        const Icon = prompt.icon;
+                        return (
+                          <button
+                            key={i}
+                            onClick={() => {
+                              setUserInput(prompt.text);
+                              inputRef.current?.focus();
+                            }}
+                            disabled={isInputDisabled}
+                            className="flex items-center gap-3 px-4 py-3 text-sm text-left rounded-xl border transition disabled:opacity-50 hover:bg-white"
+                            style={{ borderColor: `${DUKE.royal}15`, color: DUKE.navy }}
+                          >
+                            <Icon size={16} className="flex-shrink-0 text-slate-400" />
+                            <span className="line-clamp-2">{prompt.text}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
               )}
@@ -520,7 +548,7 @@ const RadiologyAssistantPOC = () => {
                 <AlertCircle size={22} />
                 Radiologist Dashboard
                 {radiologistNotifications.length > 0 && (
-                  <span className="px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full animate-pulse">
+                  <span className="px-2 py-0.5 text-white text-xs font-bold rounded-full animate-pulse" style={{ backgroundColor: DUKE.copper }}>
                     {radiologistNotifications.length}
                   </span>
                 )}
@@ -561,27 +589,23 @@ const RadiologyAssistantPOC = () => {
                 return (
                   <div
                     key={notif.id}
-                    className={`mb-4 border-l-4 ${
-                      notif.type === 'urgent' ? 'border-red-500 bg-red-50' : 'bg-amber-50'
-                    } rounded-r-3xl shadow-sm animate-pulse`}
-                    style={{ borderLeftColor: notif.type === 'urgent' ? undefined : DUKE.copper, animationDuration: '1s', animationIterationCount: '3' }}
+                    className="mb-4 border-l-4 rounded-r-3xl shadow-sm animate-pulse"
+                    style={{ borderLeftColor: DUKE.copper, backgroundColor: DUKE.copperLight, animationDuration: '1s', animationIterationCount: '3' }}
                   >
                     <div className="p-5">
                       <div className="flex items-start gap-4">
-                        {notif.type === 'urgent' ? (
-                          <div className="w-12 h-12 bg-red-500 rounded-2xl flex items-center justify-center flex-shrink-0">
+                        <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: DUKE.copper }}>
+                          {notif.type === 'urgent' ? (
                             <AlertCircle className="text-white" size={22} />
-                          </div>
-                        ) : (
-                          <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: DUKE.copper }}>
+                          ) : (
                             <Clock className="text-white" size={22} />
-                          </div>
-                        )}
+                          )}
+                        </div>
                         <div className="flex-1">
-                          <p className={`font-bold text-sm mb-2 ${notif.type === 'urgent' ? 'text-red-900' : ''}`} style={{ color: notif.type === 'urgent' ? undefined : DUKE.copper }}>
+                          <p className="font-bold text-sm mb-2" style={{ color: DUKE.copperMuted }}>
                             {notif.type === 'urgent' ? (
                               <span className="flex items-center gap-2">
-                                <Bell size={16} className="text-red-600" />
+                                <Bell size={16} style={{ color: DUKE.copper }} />
                                 URGENT ESCALATION
                               </span>
                             ) : (
