@@ -694,9 +694,12 @@ function App() {
       {/* Header */}
       <header className="bg-white border-b border-slate-200 px-4 py-3 flex-shrink-0">
         <div className="flex items-center justify-between">
-          <h1 className="text-lg font-bold" style={{ color: DUKE.navy }}>DukeRad Chat</h1>
-          <div className="flex items-center gap-3">
-            <div className="hidden md:flex items-center gap-2 text-sm text-slate-500">
+          <h1 className="text-lg font-bold flex-shrink-0" style={{ color: DUKE.navy }}>DukeRad Chat</h1>
+          <div className="flex-1 flex justify-center">
+            <PhaseToggle currentPhase={currentPhase} onPhaseChange={handlePhaseChange} disabled={isRunningDemo || isTyping} />
+          </div>
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <div className="hidden lg:flex items-center gap-2 text-sm text-slate-500">
               <ShiftIcon size={14} />
               <span>{shift.name}</span>
               <span className="text-slate-300">|</span>
@@ -716,9 +719,6 @@ function App() {
               {isRunningDemo ? 'Running...' : 'Demo'}
             </button>
           </div>
-        </div>
-        <div className="flex justify-center mt-3">
-          <PhaseToggle currentPhase={currentPhase} onPhaseChange={handlePhaseChange} disabled={isRunningDemo || isTyping} />
         </div>
       </header>
 
