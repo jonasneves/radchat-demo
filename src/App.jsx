@@ -604,7 +604,7 @@ function App() {
   const ShiftIcon = shift.icon;
 
   return (
-    <div className="w-full h-screen flex flex-col" style={{ backgroundColor: DUKE.whisper }}>
+    <div className="w-full h-screen flex flex-col bg-slate-100">
       {/* Header */}
       <header className="bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-4">
@@ -643,34 +643,34 @@ function App() {
       </header>
 
       {/* Main */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Chat */}
-        <div className="flex-1 flex flex-col">
-          <div className="flex-1 overflow-y-auto">
-            <div className="max-w-3xl mx-auto px-4 py-6">
-              {messages.length === 0 && !thinkingType ? (
-                <EmptyState currentPhase={currentPhase} />
-              ) : (
-                <div className="space-y-4">
-                  {messages.map((msg, idx) => (
-                    <Message key={idx} message={msg} onReact={handleReaction} />
-                  ))}
-                  {thinkingType && <ThinkingIndicator type={thinkingType} />}
-                </div>
-              )}
-              <div ref={messagesEndRef} />
+      <div className="flex-1 flex overflow-hidden p-4">
+        {/* Chat Card */}
+        <div className="flex-1 flex justify-center">
+          <div className="w-full max-w-3xl flex flex-col bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div className="flex-1 overflow-y-auto">
+              <div className="px-6 py-6">
+                {messages.length === 0 && !thinkingType ? (
+                  <EmptyState currentPhase={currentPhase} />
+                ) : (
+                  <div className="space-y-4">
+                    {messages.map((msg, idx) => (
+                      <Message key={idx} message={msg} onReact={handleReaction} />
+                    ))}
+                    {thinkingType && <ThinkingIndicator type={thinkingType} />}
+                  </div>
+                )}
+                <div ref={messagesEndRef} />
+              </div>
             </div>
-          </div>
 
-          {/* Input */}
-          <div className="border-t border-slate-200 bg-white">
-            <div className="max-w-3xl mx-auto px-4 py-4">
+            {/* Input */}
+            <div className="border-t border-slate-100 bg-slate-50 px-6 py-4">
               {messages.length === 0 && !thinkingType && (
                 <div className="mb-4">
                   <QuickActions onAction={(q) => handleSendMessage(q)} disabled={isInputDisabled} currentPhase={currentPhase} />
                 </div>
               )}
-              <div className="flex items-center gap-2 pl-4 pr-1.5 py-1.5 bg-white border border-slate-300 rounded-full focus-within:ring-2 focus-within:border-transparent transition" style={{ '--tw-ring-color': DUKE.royal }}>
+              <div className="flex items-center gap-2 pl-4 pr-1.5 py-1.5 bg-white border border-slate-200 rounded-full focus-within:ring-2 focus-within:border-transparent transition shadow-sm" style={{ '--tw-ring-color': DUKE.royal }}>
                 <input
                   ref={inputRef}
                   type="text"
