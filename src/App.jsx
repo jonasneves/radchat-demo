@@ -701,28 +701,26 @@ function App() {
   return (
     <div className="w-full h-screen flex flex-col" style={{ backgroundColor: DUKE.hatteras }}>
       {/* Control Bar */}
-      <header className="border-b border-slate-200 px-6 py-3 flex-shrink-0" style={{ backgroundColor: DUKE.navy }}>
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <h1 className="text-lg font-bold text-white">DukeRad Chat</h1>
-            <PhaseToggle currentPhase={currentPhase} onPhaseChange={handlePhaseChange} disabled={isRunningDemo || isTyping} dark />
-          </div>
-          <div className="flex items-center gap-4">
-            {currentPhase === 3 && notifications.length > 0 && (
-              <button onClick={() => setShowEscalations(!showEscalations)} className="relative p-2 rounded-lg transition hover:bg-white/10">
-                <Bell size={20} className="text-white" />
-                <span className="absolute -top-1 -right-1 w-5 h-5 text-white text-xs font-bold rounded-full flex items-center justify-center animate-pulse" style={{ backgroundColor: DUKE.copper }}>
-                  {notifications.length}
-                </span>
-              </button>
-            )}
-            <button onClick={runDemo} disabled={isInputDisabled} className="px-4 py-1.5 text-sm font-medium rounded-full transition disabled:opacity-50 disabled:cursor-not-allowed" style={{ backgroundColor: 'white', color: DUKE.navy }}>
-              {isRunningDemo ? 'Running...' : 'Run Demo'}
+      <header className="px-6 py-3 flex-shrink-0 flex items-center justify-between" style={{ backgroundColor: DUKE.navy }}>
+        <div className="flex items-center gap-4">
+          <h1 className="text-lg font-bold text-white">DukeRad Chat</h1>
+          <PhaseToggle currentPhase={currentPhase} onPhaseChange={handlePhaseChange} disabled={isRunningDemo || isTyping} dark />
+        </div>
+        <div className="flex items-center gap-4">
+          {currentPhase === 3 && notifications.length > 0 && (
+            <button onClick={() => setShowEscalations(!showEscalations)} className="relative p-2 rounded-lg transition hover:bg-white/10">
+              <Bell size={20} className="text-white" />
+              <span className="absolute -top-1 -right-1 w-5 h-5 text-white text-xs font-bold rounded-full flex items-center justify-center animate-pulse" style={{ backgroundColor: DUKE.copper }}>
+                {notifications.length}
+              </span>
             </button>
-            <a href="https://radchat.neevs.io/" target="_blank" rel="noopener noreferrer" className="text-sm text-white/80 hover:text-white transition">
-              Live version →
-            </a>
-          </div>
+          )}
+          <button onClick={runDemo} disabled={isInputDisabled} className="px-4 py-1.5 text-sm font-medium rounded-full transition disabled:opacity-50 disabled:cursor-not-allowed" style={{ backgroundColor: 'white', color: DUKE.navy }}>
+            {isRunningDemo ? 'Running...' : 'Run Demo'}
+          </button>
+          <a href="https://radchat.neevs.io/" target="_blank" rel="noopener noreferrer" className="text-sm text-white/80 hover:text-white transition">
+            Live version →
+          </a>
         </div>
       </header>
 

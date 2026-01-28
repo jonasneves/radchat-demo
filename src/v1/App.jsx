@@ -401,22 +401,20 @@ const RadiologyAssistantPOC = () => {
   return (
     <div className="w-full h-screen flex flex-col" style={{ backgroundColor: DUKE.hatteras }}>
       {/* Control Bar */}
-      <header className="px-6 py-3 flex-shrink-0" style={{ backgroundColor: DUKE.navy }}>
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <h1 className="text-lg font-bold text-white">DukeRad Chat</h1>
-          <div className="flex items-center gap-4">
-            <button
-              onClick={runDemo}
-              disabled={isInputDisabled}
-              className="px-4 py-1.5 text-sm font-medium rounded-full transition disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ backgroundColor: 'white', color: DUKE.navy }}
-            >
-              {isRunningDemo ? 'Running...' : 'Run Demo'}
-            </button>
-            <a href="https://radchat.neevs.io/" target="_blank" rel="noopener noreferrer" className="text-sm text-white/80 hover:text-white transition">
-              Live version →
-            </a>
-          </div>
+      <header className="px-6 py-3 flex-shrink-0 flex items-center justify-between" style={{ backgroundColor: DUKE.navy }}>
+        <h1 className="text-lg font-bold text-white">DukeRad Chat</h1>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={runDemo}
+            disabled={isInputDisabled}
+            className="px-4 py-1.5 text-sm font-medium rounded-full transition disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{ backgroundColor: 'white', color: DUKE.navy }}
+          >
+            {isRunningDemo ? 'Running...' : 'Run Demo'}
+          </button>
+          <a href="https://radchat.neevs.io/" target="_blank" rel="noopener noreferrer" className="text-sm text-white/80 hover:text-white transition">
+            Live version →
+          </a>
         </div>
       </header>
 
