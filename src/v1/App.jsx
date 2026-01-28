@@ -1,6 +1,19 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Send, Phone, AlertCircle, CheckCircle, Clock, User, Activity, TrendingUp, Bell, Check, CheckCheck, Database, BookOpen, ThumbsUp, ThumbsDown, ArrowUp } from 'lucide-react';
 
+// Duke Brand Colors
+const DUKE = {
+  navy: '#012169',
+  royal: '#00539B',
+  copper: '#C84E00',
+  persimmon: '#E89923',
+  piedmont: '#A1B70D',
+  eno: '#339898',
+  shale: '#0577B1',
+  hatteras: '#E2E6ED',
+  whisper: '#F3F2F1',
+};
+
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -63,12 +76,12 @@ function ThinkingIndicator({ type }) {
   return (
     <div className="flex justify-start mb-4">
       <div className="bg-white rounded-3xl px-5 py-3.5 shadow-sm border border-slate-200 flex items-center gap-3">
-        <Icon size={18} className="text-blue-600 animate-pulse" />
+        <Icon size={18} style={{ color: DUKE.royal }} className="animate-pulse" />
         <span className="text-sm text-slate-500">{config.text}</span>
         <div className="flex gap-1.5">
-          <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" />
-          <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }} />
-          <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }} />
+          <div className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: DUKE.royal }} />
+          <div className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: DUKE.royal, animationDelay: '0.15s' }} />
+          <div className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: DUKE.royal, animationDelay: '0.3s' }} />
         </div>
       </div>
     </div>
@@ -78,10 +91,10 @@ function ThinkingIndicator({ type }) {
 function MessageStatus({ status, time }) {
   return (
     <div className="flex items-center gap-1 mt-2 justify-end">
-      <span className="text-xs text-blue-200">{time}</span>
-      {status === 'sent' && <Check size={12} className="text-blue-300/60" />}
-      {status === 'delivered' && <CheckCheck size={12} className="text-blue-300/60" />}
-      {status === 'read' && <CheckCheck size={12} className="text-blue-100" />}
+      <span className="text-xs opacity-70">{time}</span>
+      {status === 'sent' && <Check size={12} className="opacity-50" />}
+      {status === 'delivered' && <CheckCheck size={12} className="opacity-50" />}
+      {status === 'read' && <CheckCheck size={12} className="opacity-90" />}
     </div>
   );
 }
@@ -377,17 +390,18 @@ const RadiologyAssistantPOC = () => {
   const isInputDisabled = isTyping || isRunningDemo || thinkingType;
 
   return (
-    <div className="w-full h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 p-4">
+    <div className="w-full h-screen p-4" style={{ backgroundColor: DUKE.whisper }}>
       <div className="max-w-7xl mx-auto h-full flex flex-col">
         {/* Header */}
         <div className="text-center mb-3">
-          <h1 className="text-2xl font-black text-slate-900 mb-1 tracking-tight">
-            AI Radiology Assistant
+          <h1 className="text-2xl font-black mb-1 tracking-tight" style={{ color: DUKE.navy }}>
+            DukeRad Chat
           </h1>
           <button
             onClick={runDemo}
             disabled={isInputDisabled}
-            className="px-4 py-1.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-xs font-bold rounded-full hover:from-blue-700 hover:to-blue-800 disabled:from-slate-400 disabled:to-slate-500 disabled:cursor-not-allowed transition shadow-md"
+            className="px-4 py-1.5 text-white text-xs font-bold rounded-full hover:opacity-90 disabled:bg-slate-400 disabled:cursor-not-allowed transition shadow-md"
+            style={{ backgroundColor: isInputDisabled ? undefined : DUKE.royal }}
           >
             {isRunningDemo ? 'Running Demo...' : 'Run Interactive Demo'}
           </button>
@@ -396,22 +410,22 @@ const RadiologyAssistantPOC = () => {
         {/* Main Split View */}
         <div className="flex-1 flex gap-0 overflow-hidden shadow-2xl rounded-3xl">
           {/* LEFT SIDE - Clinician Chat */}
-          <div className="flex-1 flex flex-col bg-slate-50 rounded-l-3xl">
-            <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 rounded-tl-3xl border-b border-blue-800">
+          <div className="flex-1 flex flex-col rounded-l-3xl" style={{ backgroundColor: DUKE.hatteras }}>
+            <div className="text-white p-6 rounded-tl-3xl" style={{ background: `linear-gradient(to right, ${DUKE.royal}, ${DUKE.navy})` }}>
               <h2 className="text-lg font-bold flex items-center gap-2">
                 <User size={22} />
                 Clinician Interface
               </h2>
-              <p className="text-xs text-blue-100 mt-1">Chat with AI Assistant</p>
+              <p className="text-xs opacity-80 mt-1">Chat with AI Assistant</p>
             </div>
 
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
               {messages.length === 0 && !thinkingType && (
                 <div className="text-center py-20">
-                  <div className="w-24 h-24 bg-blue-100 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-sm">
-                    <Activity size={48} className="text-blue-600" />
+                  <div className="w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-sm" style={{ backgroundColor: `${DUKE.royal}15` }}>
+                    <Activity size={48} style={{ color: DUKE.royal }} />
                   </div>
-                  <p className="text-lg font-bold text-slate-800">Welcome to Radiology AI</p>
+                  <p className="text-lg font-bold text-slate-800">Welcome to DukeRad Chat</p>
                   <p className="text-sm text-slate-600 mt-2 max-w-md mx-auto">
                     Ask me questions about imaging orders, exam status, protocols, or contact information
                   </p>
@@ -433,7 +447,7 @@ const RadiologyAssistantPOC = () => {
                   <div key={msg.id || msg.timestamp} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
                     <div className={`max-w-[75%] ${msg.sender === 'user' ? 'items-end' : 'items-start'} flex flex-col gap-2`}>
                       {msg.sender === 'user' ? (
-                        <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-3xl px-5 py-3.5 shadow-md">
+                        <div className="text-white rounded-3xl px-5 py-3.5 shadow-md" style={{ background: `linear-gradient(to right, ${DUKE.royal}, ${DUKE.navy})` }}>
                           <p className="text-sm leading-relaxed">{msg.text}</p>
                           <MessageStatus status={msg.status} time={relativeTime} />
                         </div>
@@ -441,7 +455,7 @@ const RadiologyAssistantPOC = () => {
                         <div className="flex flex-col gap-2 w-full">
                           {msg.hasData && (
                             <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-3xl shadow-md border border-slate-200 overflow-hidden">
-                              <div className="bg-slate-700 text-white px-5 py-2.5 flex items-center gap-2">
+                              <div className="text-white px-5 py-2.5 flex items-center gap-2" style={{ backgroundColor: DUKE.navy }}>
                                 <Activity size={16} />
                                 <span className="text-xs font-bold uppercase tracking-wide">{msg.dataSource}</span>
                               </div>
@@ -476,7 +490,7 @@ const RadiologyAssistantPOC = () => {
 
             {/* Input Area */}
             <div className="p-6 bg-white border-t border-slate-200 rounded-bl-3xl">
-              <div className="flex-1 flex items-center gap-2 pl-5 pr-1.5 py-1.5 bg-white border border-slate-300 rounded-full focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition">
+              <div className="flex-1 flex items-center gap-2 pl-5 pr-1.5 py-1.5 bg-white border border-slate-300 rounded-full focus-within:ring-2 focus-within:border-transparent transition" style={{ '--tw-ring-color': DUKE.royal }}>
                 <input
                   ref={inputRef}
                   type="text"
@@ -490,7 +504,8 @@ const RadiologyAssistantPOC = () => {
                 <button
                   onClick={handleSendMessage}
                   disabled={isInputDisabled || !userInput.trim()}
-                  className="p-2.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition"
+                  className="p-2.5 text-white rounded-full hover:opacity-90 disabled:bg-slate-300 disabled:cursor-not-allowed transition"
+                  style={{ backgroundColor: isInputDisabled || !userInput.trim() ? undefined : DUKE.royal }}
                 >
                   <ArrowUp size={20} strokeWidth={2.5} />
                 </button>
@@ -499,8 +514,8 @@ const RadiologyAssistantPOC = () => {
           </div>
 
           {/* RIGHT SIDE - Radiologist Dashboard */}
-          <div className="flex-1 flex flex-col bg-slate-800 rounded-r-3xl border-l border-slate-700">
-            <div className="bg-slate-900 text-white p-6 rounded-tr-3xl border-b border-slate-700">
+          <div className="flex-1 flex flex-col rounded-r-3xl border-l border-slate-700" style={{ backgroundColor: '#1e293b' }}>
+            <div className="text-white p-6 rounded-tr-3xl border-b border-slate-700" style={{ backgroundColor: DUKE.navy }}>
               <h2 className="text-lg font-bold flex items-center gap-2">
                 <AlertCircle size={22} />
                 Radiologist Dashboard
@@ -517,24 +532,24 @@ const RadiologyAssistantPOC = () => {
               {radiologistNotifications.length === 0 && (
                 <div className="text-center py-20">
                   <div className="w-24 h-24 bg-slate-700 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-sm">
-                    <CheckCircle size={48} className="text-blue-400" />
+                    <CheckCircle size={48} style={{ color: DUKE.shale }} />
                   </div>
                   <p className="text-lg font-bold text-white">All Clear</p>
                   <p className="text-sm text-slate-400 mt-2">No pending urgent consultations</p>
                   <p className="text-xs text-slate-500 mt-3">AI is handling routine queries</p>
                   <div className="mt-10 bg-slate-700 rounded-3xl p-6 max-w-sm mx-auto shadow-sm border border-slate-600">
                     <div className="flex items-center gap-2 text-white font-bold mb-5">
-                      <TrendingUp size={18} className="text-blue-400" />
+                      <TrendingUp size={18} style={{ color: DUKE.shale }} />
                       <span className="text-sm">Today's Stats</span>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="text-center p-4 bg-slate-600 rounded-2xl border border-slate-500">
                         <p className="text-slate-300 text-xs mb-2">AI Resolved</p>
-                        <p className="text-4xl font-bold text-blue-400">{stats.resolved}</p>
+                        <p className="text-4xl font-bold" style={{ color: DUKE.shale }}>{stats.resolved}</p>
                       </div>
                       <div className="text-center p-4 bg-slate-600 rounded-2xl border border-slate-500">
                         <p className="text-slate-300 text-xs mb-2">Escalated</p>
-                        <p className="text-4xl font-bold text-orange-400">{stats.escalated}</p>
+                        <p className="text-4xl font-bold" style={{ color: DUKE.persimmon }}>{stats.escalated}</p>
                       </div>
                     </div>
                   </div>
@@ -547,9 +562,9 @@ const RadiologyAssistantPOC = () => {
                   <div
                     key={notif.id}
                     className={`mb-4 border-l-4 ${
-                      notif.type === 'urgent' ? 'border-red-500 bg-red-50' : 'border-amber-500 bg-amber-50'
+                      notif.type === 'urgent' ? 'border-red-500 bg-red-50' : 'bg-amber-50'
                     } rounded-r-3xl shadow-sm animate-pulse`}
-                    style={{animationDuration: '1s', animationIterationCount: '3'}}
+                    style={{ borderLeftColor: notif.type === 'urgent' ? undefined : DUKE.copper, animationDuration: '1s', animationIterationCount: '3' }}
                   >
                     <div className="p-5">
                       <div className="flex items-start gap-4">
@@ -558,12 +573,12 @@ const RadiologyAssistantPOC = () => {
                             <AlertCircle className="text-white" size={22} />
                           </div>
                         ) : (
-                          <div className="w-12 h-12 bg-amber-500 rounded-2xl flex items-center justify-center flex-shrink-0">
+                          <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: DUKE.copper }}>
                             <Clock className="text-white" size={22} />
                           </div>
                         )}
                         <div className="flex-1">
-                          <p className={`font-bold text-sm mb-2 ${notif.type === 'urgent' ? 'text-red-900' : 'text-amber-900'}`}>
+                          <p className={`font-bold text-sm mb-2 ${notif.type === 'urgent' ? 'text-red-900' : ''}`} style={{ color: notif.type === 'urgent' ? undefined : DUKE.copper }}>
                             {notif.type === 'urgent' ? (
                               <span className="flex items-center gap-2">
                                 <Bell size={16} className="text-red-600" />
@@ -571,7 +586,7 @@ const RadiologyAssistantPOC = () => {
                               </span>
                             ) : (
                               <span className="flex items-center gap-2">
-                                <AlertCircle size={16} className="text-amber-600" />
+                                <AlertCircle size={16} style={{ color: DUKE.copper }} />
                                 AI Needs Help
                               </span>
                             )}
@@ -583,7 +598,7 @@ const RadiologyAssistantPOC = () => {
                             <p><strong>Time:</strong> {relativeTime}</p>
                           </div>
                           <div className="flex gap-2">
-                            <button className="px-4 py-2 bg-blue-600 text-white text-sm rounded-xl hover:bg-blue-700 transition flex items-center gap-2 shadow-sm font-semibold">
+                            <button className="px-4 py-2 text-white text-sm rounded-xl hover:opacity-90 transition flex items-center gap-2 shadow-sm font-semibold" style={{ backgroundColor: DUKE.royal }}>
                               <Phone size={14} /> Call Back
                             </button>
                             <button className="px-4 py-2 bg-slate-600 text-white text-sm rounded-xl hover:bg-slate-700 transition shadow-sm font-semibold flex items-center gap-2">
