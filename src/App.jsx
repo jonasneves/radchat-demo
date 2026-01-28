@@ -144,9 +144,9 @@ if (typeof document !== 'undefined' && !document.getElementById(styleId)) {
   document.head.appendChild(style);
 }
 
-function PhaseToggle({ currentPhase, onPhaseChange, disabled }) {
+function PhaseToggle({ currentPhase, onPhaseChange, disabled, dark }) {
   return (
-    <div className="flex items-center gap-1 p-1 rounded-xl" style={{ backgroundColor: DUKE.hatteras }}>
+    <div className="flex items-center gap-1 p-1 rounded-xl" style={{ backgroundColor: dark ? 'rgba(255,255,255,0.1)' : DUKE.hatteras }}>
       {[1, 2, 3].map((phase) => {
         const config = PHASES[phase];
         const Icon = config.icon;
@@ -156,10 +156,10 @@ function PhaseToggle({ currentPhase, onPhaseChange, disabled }) {
             key={phase}
             onClick={() => onPhaseChange(phase)}
             disabled={disabled}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${isActive ? 'text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 hover:bg-white'} disabled:opacity-50`}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${isActive ? 'text-white shadow-sm' : dark ? 'text-white/60 hover:text-white hover:bg-white/10' : 'text-slate-500 hover:text-slate-700 hover:bg-white'} disabled:opacity-50`}
             style={isActive ? { backgroundColor: config.color } : undefined}
           >
-            <Icon size={16} />
+            <Icon size={14} />
             <span className="hidden sm:inline">{config.name}</span>
           </button>
         );
@@ -288,8 +288,7 @@ function Message({ message, onReact, showTimeGroup }) {
   );
 }
 
-function EmptyState({ currentPhase, onPhaseChange, onPromptClick, disabled }) {
-  const config = PHASES[currentPhase];
+function EmptyState({ currentPhase, onPromptClick, disabled }) {
   const prompts = EXAMPLE_PROMPTS[currentPhase];
   return (
     <div className="flex-1 flex flex-col items-center justify-center text-center px-8 py-12">
@@ -297,13 +296,9 @@ function EmptyState({ currentPhase, onPhaseChange, onPromptClick, disabled }) {
         <Activity size={40} style={{ color: DUKE.royal }} />
       </div>
       <h2 className="text-xl font-bold text-slate-800 mb-2">Welcome to DukeRad Chat</h2>
-      <p className="text-slate-500 text-sm mb-6 max-w-sm">
+      <p className="text-slate-500 text-sm mb-8 max-w-sm">
         Ask questions about imaging orders, exam status, protocols, or contact information
       </p>
-
-      <div className="mb-8">
-        <PhaseToggle currentPhase={currentPhase} onPhaseChange={onPhaseChange} disabled={disabled} />
-      </div>
 
       <div className="w-full max-w-lg">
         <p className="text-xs text-slate-400 uppercase tracking-wide mb-3 text-center">Try asking</p>
@@ -324,12 +319,6 @@ function EmptyState({ currentPhase, onPhaseChange, onPromptClick, disabled }) {
             );
           })}
         </div>
-      </div>
-
-      <div className="mt-10 pt-6 border-t border-slate-100">
-        <a href="https://radchat.neevs.io/" target="_blank" rel="noopener noreferrer" className="text-sm hover:underline" style={{ color: DUKE.royal }}>
-          Try the live version →
-        </a>
       </div>
     </div>
   );
@@ -711,22 +700,28 @@ function App() {
 
   return (
     <div className="w-full h-screen flex flex-col" style={{ backgroundColor: DUKE.hatteras }}>
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex-shrink-0">
+      {/* Control Bar */}
+      <header className="border-b border-slate-200 px-6 py-3 flex-shrink-0" style={{ backgroundColor: DUKE.navy }}>
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <h1 className="text-xl font-bold" style={{ color: DUKE.navy }}>DukeRad Chat</h1>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
+            <h1 className="text-lg font-bold text-white">DukeRad Chat</h1>
+            <PhaseToggle currentPhase={currentPhase} onPhaseChange={handlePhaseChange} disabled={isRunningDemo || isTyping} dark />
+          </div>
+          <div className="flex items-center gap-4">
             {currentPhase === 3 && notifications.length > 0 && (
-              <button onClick={() => setShowEscalations(!showEscalations)} className="relative p-2 rounded-lg transition hover:bg-slate-100">
-                <Bell size={20} className="text-slate-600" />
+              <button onClick={() => setShowEscalations(!showEscalations)} className="relative p-2 rounded-lg transition hover:bg-white/10">
+                <Bell size={20} className="text-white" />
                 <span className="absolute -top-1 -right-1 w-5 h-5 text-white text-xs font-bold rounded-full flex items-center justify-center animate-pulse" style={{ backgroundColor: DUKE.copper }}>
                   {notifications.length}
                 </span>
               </button>
             )}
-            <button onClick={runDemo} disabled={isInputDisabled} className="px-5 py-2 text-white text-sm font-semibold rounded-full hover:opacity-90 disabled:bg-slate-300 disabled:cursor-not-allowed transition shadow-sm" style={{ backgroundColor: isInputDisabled ? undefined : DUKE.royal }}>
+            <button onClick={runDemo} disabled={isInputDisabled} className="px-4 py-1.5 text-sm font-medium rounded-full transition disabled:opacity-50 disabled:cursor-not-allowed" style={{ backgroundColor: 'white', color: DUKE.navy }}>
               {isRunningDemo ? 'Running...' : 'Run Demo'}
             </button>
+            <a href="https://radchat.neevs.io/" target="_blank" rel="noopener noreferrer" className="text-sm text-white/80 hover:text-white transition">
+              Live version →
+            </a>
           </div>
         </div>
       </header>
@@ -736,20 +731,9 @@ function App() {
         {/* Chat Card */}
         <div className="flex-1 flex justify-center">
           <div className="w-full max-w-3xl flex flex-col bg-white rounded-3xl shadow-xl overflow-hidden relative">
-            {/* Phase indicator when messages exist */}
-            {messages.length > 0 && (
-              <div className="px-6 py-3 border-b border-slate-100 flex items-center justify-between">
-                <PhaseToggle currentPhase={currentPhase} onPhaseChange={handlePhaseChange} disabled={isRunningDemo || isTyping} />
-                <div className="hidden sm:flex items-center gap-2 text-xs text-slate-400">
-                  <ShiftIcon size={12} />
-                  <span>{shift.name} shift</span>
-                </div>
-              </div>
-            )}
-
             <div className="flex-1 overflow-y-auto px-6 py-6" ref={scrollContainerRef} onScroll={handleScroll}>
               {messages.length === 0 && !thinkingType ? (
-                <EmptyState currentPhase={currentPhase} onPhaseChange={handlePhaseChange} onPromptClick={handleSendMessage} disabled={isInputDisabled} />
+                <EmptyState currentPhase={currentPhase} onPromptClick={handleSendMessage} disabled={isInputDisabled} />
               ) : (
                 <div className="space-y-4">
                   {messages.map((msg, idx) => (
