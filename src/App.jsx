@@ -51,7 +51,7 @@ const EXAMPLE_PROMPTS = {
     { text: "Who's on call for neuroradiology?", icon: Phone },
   ],
   3: [
-    { text: "Status of my patient's chest CT?", icon: FileText },
+    { text: "I need a PICC line placed", icon: Activity },
     { text: "ACR criteria for suspected PE?", icon: BookOpen },
     { text: "Who's on call for neuroradiology?", icon: Phone },
     { text: "URGENT: Need immediate consult", icon: AlertCircle },
