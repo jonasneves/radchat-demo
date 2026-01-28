@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Phone, AlertCircle, CheckCircle, Clock, Activity, Bell, Check, CheckCheck, Database, BookOpen, X, ThumbsUp, ThumbsDown, Zap, FileText, Users, Sun, Moon, Server, ClipboardList, ArrowUp, ArrowDown, Send } from 'lucide-react';
+import { Phone, AlertCircle, CheckCircle, Clock, Activity, Bell, Check, CheckCheck, Database, BookOpen, X, ThumbsUp, ThumbsDown, FileText, Users, Sun, Moon, Server, ClipboardList, ArrowUp, ArrowDown, Send } from 'lucide-react';
 
 // Duke Brand Colors
 const DUKE = {

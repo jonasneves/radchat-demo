@@ -9,11 +9,8 @@ const DUKE = {
   copperLight: '#FEF3E8',
   copperMuted: '#B34500',
   persimmon: '#E89923',
-  piedmont: '#A1B70D',
-  eno: '#339898',
   shale: '#0577B1',
   hatteras: '#E2E6ED',
-  whisper: '#F3F2F1',
 };
 
 const EXAMPLE_PROMPTS = [
@@ -53,9 +50,7 @@ function playNotificationSound() {
     oscillator.start();
     gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
     oscillator.stop(audioContext.currentTime + 0.3);
-  } catch {
-    // Audio not available
-  }
+  } catch {}
 }
 
 function requestNotificationPermission() {
@@ -412,9 +407,6 @@ const RadiologyAssistantPOC = () => {
           >
             {isRunningDemo ? 'Running...' : 'Run Demo'}
           </button>
-          <a href="https://radchat.neevs.io/" target="_blank" rel="noopener noreferrer" className="text-sm text-white/80 hover:text-white transition">
-            Live version →
-          </a>
         </div>
       </header>
 
