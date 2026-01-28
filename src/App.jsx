@@ -40,20 +40,21 @@ const PHASE_DEMO_SEQUENCES = {
 
 const EXAMPLE_PROMPTS = {
   1: [
-    "Who covers body imaging today?",
-    "What's the pager for neuroradiology?",
-    "How do I reach radiology after hours?",
+    { text: "Who covers body imaging today?", icon: Users },
+    { text: "What's the pager for neuroradiology?", icon: Phone },
+    { text: "How do I reach radiology after hours?", icon: Clock },
   ],
   2: [
-    "Who covers radiology today?",
-    "ACR criteria for suspected PE?",
-    "Is CT or MRI better for knee injury?",
+    { text: "Who covers radiology today?", icon: Users },
+    { text: "ACR criteria for suspected PE?", icon: BookOpen },
+    { text: "Is CT or MRI better for knee injury?", icon: ClipboardList },
+    { text: "Who's on call for neuroradiology?", icon: Phone },
   ],
   3: [
-    "Status of my patient's chest CT?",
-    "ACR criteria for suspected PE?",
-    "Who's on call for neuroradiology?",
-    "URGENT: Need immediate consult",
+    { text: "Status of my patient's chest CT?", icon: FileText },
+    { text: "ACR criteria for suspected PE?", icon: BookOpen },
+    { text: "Who's on call for neuroradiology?", icon: Phone },
+    { text: "URGENT: Need immediate consult", icon: AlertCircle },
   ]
 };
 
@@ -291,7 +292,7 @@ function EmptyState({ currentPhase, onPhaseChange, onPromptClick, disabled }) {
   const config = PHASES[currentPhase];
   const prompts = EXAMPLE_PROMPTS[currentPhase];
   return (
-    <div className="flex-1 flex flex-col items-center justify-center text-center px-8 py-16">
+    <div className="flex-1 flex flex-col items-center justify-center text-center px-8 py-12">
       <div className="w-20 h-20 rounded-3xl flex items-center justify-center mb-6" style={{ backgroundColor: `${DUKE.royal}15` }}>
         <Activity size={40} style={{ color: DUKE.royal }} />
       </div>
@@ -304,22 +305,25 @@ function EmptyState({ currentPhase, onPhaseChange, onPromptClick, disabled }) {
         <PhaseToggle currentPhase={currentPhase} onPhaseChange={onPhaseChange} disabled={disabled} />
       </div>
 
-      <div className="text-left max-w-sm w-full">
-        <p className="text-xs text-slate-400 uppercase tracking-wide mb-3">Try asking:</p>
-        <ul className="space-y-2">
-          {prompts.map((prompt, i) => (
-            <li key={i}>
+      <div className="w-full max-w-lg">
+        <p className="text-xs text-slate-400 uppercase tracking-wide mb-3 text-center">Try asking</p>
+        <div className="grid grid-cols-2 gap-2">
+          {prompts.map((prompt, i) => {
+            const Icon = prompt.icon;
+            return (
               <button
-                onClick={() => onPromptClick(prompt)}
+                key={i}
+                onClick={() => onPromptClick(prompt.text)}
                 disabled={disabled}
-                className="w-full text-left px-4 py-3 text-sm rounded-xl border transition disabled:opacity-50 hover:bg-slate-50"
+                className="flex items-center gap-3 px-4 py-3 text-sm text-left rounded-xl border transition disabled:opacity-50 hover:bg-slate-50"
                 style={{ borderColor: `${DUKE.royal}15`, color: DUKE.navy }}
               >
-                "{prompt}"
+                <Icon size={16} className="flex-shrink-0 text-slate-400" />
+                <span className="line-clamp-2">{prompt.text}</span>
               </button>
-            </li>
-          ))}
-        </ul>
+            );
+          })}
+        </div>
       </div>
 
       <div className="mt-10 pt-6 border-t border-slate-100">
