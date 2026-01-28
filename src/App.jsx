@@ -718,9 +718,6 @@ function App() {
           <button onClick={runDemo} disabled={isInputDisabled} className="px-4 py-1.5 text-sm font-medium rounded-full transition disabled:opacity-50 disabled:cursor-not-allowed" style={{ backgroundColor: 'white', color: DUKE.navy }}>
             {isRunningDemo ? 'Running...' : 'Run Demo'}
           </button>
-          <a href="https://radchat.neevs.io/" target="_blank" rel="noopener noreferrer" className="text-sm text-white/80 hover:text-white transition">
-            Live version →
-          </a>
         </div>
       </header>
 
