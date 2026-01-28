@@ -410,8 +410,8 @@ const RadiologyAssistantPOC = () => {
         {/* Main Split View */}
         <div className="flex-1 flex gap-0 overflow-hidden shadow-2xl rounded-3xl">
           {/* LEFT SIDE - Clinician Chat */}
-          <div className="flex-1 flex flex-col rounded-l-3xl" style={{ backgroundColor: DUKE.hatteras }}>
-            <div className="text-white p-6 rounded-tl-3xl" style={{ background: `linear-gradient(to right, ${DUKE.royal}, ${DUKE.navy})` }}>
+          <div className="flex-1 flex flex-col bg-slate-50 rounded-l-3xl">
+            <div className="text-white p-6 rounded-tl-3xl" style={{ backgroundColor: DUKE.royal }}>
               <h2 className="text-lg font-bold flex items-center gap-2">
                 <User size={22} />
                 Clinician Interface
@@ -422,7 +422,7 @@ const RadiologyAssistantPOC = () => {
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
               {messages.length === 0 && !thinkingType && (
                 <div className="text-center py-20">
-                  <div className="w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-sm" style={{ backgroundColor: `${DUKE.royal}15` }}>
+                  <div className="w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-sm" style={{ backgroundColor: `${DUKE.royal}20` }}>
                     <Activity size={48} style={{ color: DUKE.royal }} />
                   </div>
                   <p className="text-lg font-bold text-slate-800">Welcome to DukeRad Chat</p>
@@ -447,7 +447,7 @@ const RadiologyAssistantPOC = () => {
                   <div key={msg.id || msg.timestamp} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
                     <div className={`max-w-[75%] ${msg.sender === 'user' ? 'items-end' : 'items-start'} flex flex-col gap-2`}>
                       {msg.sender === 'user' ? (
-                        <div className="text-white rounded-3xl px-5 py-3.5 shadow-md" style={{ background: `linear-gradient(to right, ${DUKE.royal}, ${DUKE.navy})` }}>
+                        <div className="text-white rounded-3xl px-5 py-3.5 shadow-md" style={{ backgroundColor: DUKE.royal }}>
                           <p className="text-sm leading-relaxed">{msg.text}</p>
                           <MessageStatus status={msg.status} time={relativeTime} />
                         </div>
