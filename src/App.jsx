@@ -297,15 +297,15 @@ function EmptyState({ currentPhase, onPromptClick, disabled }) {
       </div>
       <h2 className="text-lg font-semibold text-slate-800 mb-1">DukeRad Chat</h2>
       <p className="text-slate-500 text-sm">{config.title}</p>
-      <p className="text-xs text-slate-400 mt-1 mb-8">{config.description}</p>
-      <div className="w-full max-w-sm space-y-2">
+      <p className="text-xs text-slate-400 mt-1 mb-6">{config.description}</p>
+      <div className="flex flex-wrap justify-center gap-2 max-w-md">
         {prompts.map((prompt, i) => (
           <button
             key={i}
             onClick={() => onPromptClick(prompt)}
             disabled={disabled}
-            className="w-full px-4 py-3 text-sm text-left rounded-xl transition disabled:opacity-50 hover:bg-slate-50"
-            style={{ backgroundColor: DUKE.hatteras + '60', color: DUKE.navy }}
+            className="px-3 py-2 text-sm rounded-full border transition disabled:opacity-50 hover:bg-white"
+            style={{ backgroundColor: DUKE.hatteras, borderColor: `${DUKE.royal}20`, color: DUKE.navy }}
           >
             {prompt}
           </button>
@@ -692,31 +692,33 @@ function App() {
   return (
     <div className="w-full h-screen flex flex-col" style={{ backgroundColor: DUKE.hatteras }}>
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between flex-shrink-0">
-        <div className="flex items-center gap-4">
+      <header className="bg-white border-b border-slate-200 px-4 py-3 flex-shrink-0">
+        <div className="flex items-center justify-between">
           <h1 className="text-lg font-bold" style={{ color: DUKE.navy }}>DukeRad Chat</h1>
-          <PhaseToggle currentPhase={currentPhase} onPhaseChange={handlePhaseChange} disabled={isRunningDemo || isTyping} />
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="hidden md:flex items-center gap-2 text-sm text-slate-500">
-            <ShiftIcon size={14} />
-            <span>{shift.name}</span>
-            <span className="text-slate-300">|</span>
-            <span className="text-slate-700">{shift.onCall}</span>
-          </div>
-          {currentPhase === 3 && (
-            <button onClick={() => setShowEscalations(!showEscalations)} className="relative p-2 rounded-lg transition hover:bg-slate-100">
-              <Bell size={20} className="text-slate-600" />
-              {notifications.length > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center animate-pulse">
-                  {notifications.length}
-                </span>
-              )}
+          <div className="flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-2 text-sm text-slate-500">
+              <ShiftIcon size={14} />
+              <span>{shift.name}</span>
+              <span className="text-slate-300">|</span>
+              <span className="text-slate-700">{shift.onCall}</span>
+            </div>
+            {currentPhase === 3 && (
+              <button onClick={() => setShowEscalations(!showEscalations)} className="relative p-2 rounded-lg transition hover:bg-slate-100">
+                <Bell size={20} className="text-slate-600" />
+                {notifications.length > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 text-white text-xs font-bold rounded-full flex items-center justify-center animate-pulse" style={{ backgroundColor: DUKE.copper }}>
+                    {notifications.length}
+                  </span>
+                )}
+              </button>
+            )}
+            <button onClick={runDemo} disabled={isInputDisabled} className="px-4 py-2 text-white text-sm font-medium rounded-lg hover:opacity-90 disabled:bg-slate-300 disabled:cursor-not-allowed transition" style={{ backgroundColor: isInputDisabled ? undefined : DUKE.royal }}>
+              {isRunningDemo ? 'Running...' : 'Demo'}
             </button>
-          )}
-          <button onClick={runDemo} disabled={isInputDisabled} className="px-4 py-2 text-white text-sm font-medium rounded-lg hover:opacity-90 disabled:bg-slate-300 disabled:cursor-not-allowed transition" style={{ backgroundColor: isInputDisabled ? undefined : DUKE.royal }}>
-            {isRunningDemo ? 'Running...' : 'Demo'}
-          </button>
+          </div>
+        </div>
+        <div className="flex justify-center mt-3">
+          <PhaseToggle currentPhase={currentPhase} onPhaseChange={handlePhaseChange} disabled={isRunningDemo || isTyping} />
         </div>
       </header>
 
@@ -763,7 +765,7 @@ function App() {
                   <button
                     onClick={() => handleSendMessage()}
                     disabled={isInputDisabled || !userInput.trim()}
-                    className="p-2 text-white rounded-xl hover:opacity-90 disabled:bg-slate-200 disabled:cursor-not-allowed transition"
+                    className="p-2 text-white rounded-full hover:opacity-90 disabled:bg-slate-200 disabled:cursor-not-allowed transition"
                     style={{ backgroundColor: isInputDisabled || !userInput.trim() ? undefined : DUKE.royal }}
                   >
                     <ArrowUp size={18} strokeWidth={2.5} />
