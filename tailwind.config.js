@@ -36,8 +36,7 @@ export default {
         },
       },
       fontFamily: {
-        serif: ['"Source Serif 4"', 'Georgia', '"Times New Roman"', 'serif'],
-        sans: ['"Open Sans"', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'],
+        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'],
       },
       boxShadow: {
         'xs': '0 1px 2px rgba(0, 0, 0, 0.04)',

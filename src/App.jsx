@@ -295,7 +295,7 @@ function EmptyState({ currentPhase, onPromptClick, disabled }) {
       <div className="w-20 h-20 rounded-3xl flex items-center justify-center mb-6" style={{ backgroundColor: `${DUKE.royal}15` }}>
         <Activity size={40} style={{ color: DUKE.royal }} />
       </div>
-      <h2 className="font-serif text-2xl font-bold text-duke-navy mb-2">Welcome to DukeRad Chat</h2>
+      <h2 className="text-2xl font-bold text-duke-navy mb-2">Welcome to DukeRad Chat</h2>
       <p className="text-slate-500 text-sm mb-8 max-w-sm">
         Ask questions about imaging orders, exam status, protocols, or contact information
       </p>
@@ -362,16 +362,16 @@ function EscalationPanel({ notifications, stats, onAcknowledge, onReply }) {
     return (
       <div className="text-center py-8">
         <CheckCircle size={40} className="mx-auto mb-3 text-green-400" />
-        <p className="font-serif text-base font-semibold text-white mb-1">All Clear</p>
+        <p className="text-base font-semibold text-white mb-1">All Clear</p>
         <p className="text-xs text-slate-400 mb-4">No pending escalations</p>
         <div className="grid grid-cols-2 gap-3 max-w-[200px] mx-auto">
           <div className="text-center p-2 bg-white/10 rounded-lg">
             <p className="text-[10px] text-slate-400">AI Resolved</p>
-            <p className="font-serif text-lg font-bold" style={{ color: DUKE.shale }}>{stats.resolved}</p>
+            <p className="text-xl font-bold" style={{ color: DUKE.shale }}>{stats.resolved}</p>
           </div>
           <div className="text-center p-2 bg-white/10 rounded-lg">
             <p className="text-[10px] text-slate-400">Escalated</p>
-            <p className="font-serif text-lg font-bold" style={{ color: DUKE.persimmon }}>{stats.escalated}</p>
+            <p className="text-xl font-bold" style={{ color: DUKE.persimmon }}>{stats.escalated}</p>
           </div>
         </div>
       </div>
@@ -702,7 +702,7 @@ function App() {
     <div className="w-full h-screen flex flex-col" style={{ backgroundColor: DUKE.hatteras }}>
       {/* Control Bar */}
       <header className="px-6 py-3 flex-shrink-0 flex items-center justify-between" style={{ backgroundColor: DUKE.navy }}>
-        <h1 className="font-serif text-xl font-bold text-white">DukeRad Chat</h1>
+        <h1 className="text-xl font-bold text-white">DukeRad Chat</h1>
         <div className="flex items-center gap-4">
           {currentPhase === 3 && notifications.length > 0 && (
             <button onClick={() => setShowEscalations(!showEscalations)} className="relative p-2 rounded-lg transition hover:bg-white/10">
@@ -775,7 +775,7 @@ function App() {
           <div className="w-72 flex-shrink-0 ml-4 flex flex-col rounded-2xl overflow-hidden border border-slate-700" style={{ backgroundColor: '#1e293b' }}>
             <div className="p-3 border-b border-slate-700 flex items-center justify-between" style={{ backgroundColor: DUKE.navy }}>
               <div>
-                <h2 className="font-serif text-sm font-semibold text-white flex items-center gap-2">
+                <h2 className="text-sm font-semibold text-white flex items-center gap-2">
                   <AlertCircle size={14} />
                   Radiologist View
                 </h2>
