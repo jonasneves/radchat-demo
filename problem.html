@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DukeRad Chat: The Problem</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Duke Brand Colors */
+            --duke-navy: #012169;
+            --duke-royal-blue: #00539B;
+            --duke-light-blue: #0577B1;
+            --duke-copper: #C84E00;
+            --duke-persimmon: #E89923;
+            --duke-eno: #339898;
+            
+            /* Neutrals */
+            --white: #FFFFFF;
+            --gray-50: #F8F9FA;
+            --gray-100: #E9ECEF;
+            --gray-200: #DEE2E6;
+            --gray-600: #6C757D;
+            --gray-800: #343A40;
+            --gray-900: #212529;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: var(--duke-navy);
+            padding: 2rem 0;
+            border-bottom: 4px solid var(--duke-royal-blue);
+        }
+
+        .header-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .header-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--duke-persimmon);
+            margin-bottom: 0.5rem;
+        }
+
+        .header h1 {
+            font-family: 'Source Serif 4', Georgia, serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+
+        .header-subtitle {
+            font-size: 1.125rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Main Content */
+        .main {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* Intro Section */
+        .intro {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .intro p {
+            font-family: 'Source Serif 4', Georgia, serif;
+            font-size: 1.25rem;
+            color: var(--gray-800);
+            max-width: 800px;
+        }
+
+        /* Stats Grid */
+        .stats-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            font-family: 'Source Serif 4', Georgia, serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--duke-navy);
+        }
+
+        .section-line {
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(to right, var(--duke-royal-blue), transparent);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+        }
+
+        /* Stat Card */
+        .stat-card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid var(--gray-200);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            transition: box-shadow 0.2s ease, transform 0.2s ease;
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 4px 12px rgba(1, 33, 105, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .stat-number {
+            font-family: 'Source Serif 4', Georgia, serif;
+            font-size: 2.75rem;
+            font-weight: 700;
+            color: var(--duke-navy);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-number.cost {
+            color: var(--duke-copper);
+        }
+
+        .stat-number.percentage {
+            color: var(--duke-royal-blue);
+        }
+
+        .stat-label {
+            font-size: 0.9375rem;
+            font-weight: 500;
+            color: var(--gray-800);
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+        }
+
+        .stat-context {
+            font-size: 0.8125rem;
+            color: var(--gray-600);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .stat-source {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--duke-royal-blue);
+            text-decoration: none;
+            padding: 0.375rem 0.625rem;
+            background: rgba(0, 83, 155, 0.06);
+            border-radius: 4px;
+            transition: background 0.15s ease;
+        }
+
+        .stat-source:hover {
+            background: rgba(0, 83, 155, 0.12);
+            text-decoration: underline;
+        }
+
+        .stat-source.premium {
+            background: rgba(1, 33, 105, 0.08);
+            color: var(--duke-navy);
+            border: 1px solid rgba(1, 33, 105, 0.15);
+        }
+
+        .stat-source.premium:hover {
+            background: rgba(1, 33, 105, 0.15);
+        }
+
+        .source-icon {
+            width: 12px;
+            height: 12px;
+            opacity: 0.7;
+        }
+
+        /* Highlight Card */
+        .highlight-card {
+            background: linear-gradient(135deg, var(--duke-navy) 0%, #013a91 100%);
+            color: var(--white);
+            grid-column: span 2;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        @media (max-width: 700px) {
+            .highlight-card {
+                grid-column: span 1;
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        .highlight-card .stat-number {
+            color: var(--white);
+            font-size: 4rem;
+        }
+
+        .highlight-card .stat-label {
+            color: var(--white);
+            font-size: 1.125rem;
+        }
+
+        .highlight-card .stat-context {
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .highlight-card .stat-source {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--white);
+        }
+
+        .highlight-card .stat-source:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        /* Bottom Line */
+        .bottom-line {
+            background: var(--white);
+            border: 2px solid var(--duke-navy);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .bottom-line h3 {
+            font-family: 'Source Serif 4', Georgia, serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--duke-navy);
+            margin-bottom: 1rem;
+        }
+
+        .bottom-line p {
+            font-size: 1rem;
+            color: var(--gray-800);
+            line-height: 1.7;
+        }
+
+        .bottom-line strong {
+            color: var(--duke-navy);
+        }
+
+        /* Footer */
+        .footer {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            text-align: center;
+            color: var(--gray-600);
+            font-size: 0.8125rem;
+        }
+
+        .footer a {
+            color: var(--duke-royal-blue);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <p class="header-label">DIHI 2026 Research Brief</p>
+            <h1>The Radiology Communication Crisis</h1>
+            <p class="header-subtitle">Evidence supporting DukeRad Chat intervention</p>
+        </div>
+    </header>
+
+    <main class="main">
+        <section class="intro">
+            <p>Communication breakdowns and workflow interruptions in radiology create significant financial strain, contribute to clinician burnout, and compromise patient safety. The data reveals a system under considerable operational stress.</p>
+        </section>
+
+        <!-- Cost & Waste Section -->
+        <section class="stats-section">
+            <div class="section-header">
+                <h2>Cost & Waste</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card highlight-card">
+                    <div>
+                        <div class="stat-number">$12B</div>
+                    </div>
+                    <div>
+                        <div class="stat-label">Annual cost of unnecessary imaging in the U.S.</div>
+                        <div class="stat-context">Represents significant waste that evidence-based clinical decision support can reduce.</div>
+                        <a href="https://www.jacr.org/article/S1546-1440(25)00148-6/fulltext" target="_blank" class="stat-source">
+                            <svg class="source-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                            JACR 2025
+                        </a>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-number percentage">20–50%</div>
+                    <div class="stat-label">of imaging studies may be inappropriate or unnecessary</div>
+                    <div class="stat-context">FDA-cited statistic reflecting overutilization across imaging modalities.</div>
+                    <a href="https://www.fda.gov/radiation-emitting-products/initiative-reduce-unnecessary-radiation-exposure-medical-imaging/appropriate-use" target="_blank" class="stat-source premium">
+                        <svg class="source-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                            FDA
+                    </a>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-number cost">$500K</div>
+                    <div class="stat-label">estimated cost to replace one radiologist</div>
+                    <div class="stat-context">Burnout-related turnover creates substantial financial burden on health systems.</div>
+                    <a href="https://www.merative.com/blog/fight-clinician-burnout-with-radiology-workflow-orchestration" target="_blank" class="stat-source">
+                        <svg class="source-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        Merative 2025
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Communication Failures Section -->
+        <section class="stats-section">
+            <div class="section-header">
+                <h2>Communication Failures</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number percentage">74%</div>
+                    <div class="stat-label">of radiology residents receive 2+ misdirected calls daily</div>
+                    <div class="stat-context">Study at Mount Sinai demonstrates pervasive routing failures.</div>
+                    <a href="https://www.diagnosticimaging.com/view/sorry-you-ve-got-the-wrong-number" target="_blank" class="stat-source premium">
+                        <svg class="source-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        Curr Probl Diagn Radiol 2021
+                    </a>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-number percentage">38%</div>
+                    <div class="stat-label">of communication errors adversely affect patient care</div>
+                    <div class="stat-context">Including delays in diagnosis, unnecessary procedures, and repeat imaging with added radiation exposure.</div>
+                    <a href="https://ajronline.org/doi/10.2214/AJR.15.15117" target="_blank" class="stat-source premium">
+                        <svg class="source-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        AJR 2016
+                    </a>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-number">50</div>
+                    <div class="stat-label">workflow interruptions per shift from instant messaging alone</div>
+                    <div class="stat-context">Measured among neuroradiology fellows; represents just one communication channel.</div>
+                    <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10960569/" target="_blank" class="stat-source premium">
+                        <svg class="source-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        Clinical Imaging 2024
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Workforce Impact Section -->
+        <section class="stats-section">
+            <div class="section-header">
+                <h2>Workforce Impact</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number percentage">44–65%</div>
+                    <div class="stat-label">of radiologists report burnout</div>
+                    <div class="stat-context">65% among female radiologists, 44% among male radiologists. Ranks among top burned-out specialties.</div>
+                    <a href="https://www.acr.org/Clinical-Resources/Publications-and-Research/ACR-Bulletin/Burnout-Fueling-Workforce-Woes" target="_blank" class="stat-source premium">
+                        <svg class="source-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        ACR Bulletin 2024
+                    </a>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-number percentage">62%</div>
+                    <div class="stat-label">cite too many bureaucratic tasks as burnout driver</div>
+                    <div class="stat-context">Fragmented systems, alerts, interruptions, and manual coordination steps contribute to cognitive burden.</div>
+                    <a href="https://www.diagnosticimaging.com/view/burnout-in-radiology-key-risk-factors-promising-solutions" target="_blank" class="stat-source">
+                        <svg class="source-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        Diagnostic Imaging 2024
+                    </a>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-number percentage">12%</div>
+                    <div class="stat-label">increase in diagnostic error per additional phone call</div>
+                    <div class="stat-context">Each interruption during the hour preceding report generation increases error likelihood.</div>
+                    <a href="https://pubmed.ncbi.nlm.nih.gov/24439334/" target="_blank" class="stat-source premium">
+                        <svg class="source-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        Acad Radiol 2014
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bottom Line -->
+        <div class="bottom-line">
+            <h3>The Bottom Line</h3>
+            <p>
+                Radiology communication failures are <strong>costly ($12B/year)</strong>, <strong>pervasive (74% of residents affected daily)</strong>, and <strong>harmful (38% of errors impact patient care)</strong>. 
+                Workflow interruptions directly cause diagnostic errors, while fragmented systems drive burnout that costs <strong>$500K+ per departing radiologist</strong>. 
+                These are not theoretical problems—they are documented, quantified, and addressable.
+            </p>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>DukeRad Chat · DIHI 2026 Application</p>
+    </footer>
+</body>
+</html>
