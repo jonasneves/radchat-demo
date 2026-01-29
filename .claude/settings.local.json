@@ -18,7 +18,8 @@
       "Bash(curl:*)",
       "Bash(tree:*)",
       "Bash(git push:*)",
-      "Bash(gh api:*)"
+      "Bash(gh api:*)",
+      "Bash(gh run list:*)"
     ]
   }
 }
