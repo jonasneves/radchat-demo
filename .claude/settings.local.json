@@ -19,7 +19,8 @@
       "Bash(tree:*)",
       "Bash(git push:*)",
       "Bash(gh api:*)",
-      "Bash(gh run list:*)"
+      "Bash(gh run list:*)",
+      "Bash(git reset:*)"
     ]
   }
 }
