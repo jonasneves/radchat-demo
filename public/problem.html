@@ -186,6 +186,8 @@
             background: rgba(0, 83, 155, 0.06);
             border-radius: 4px;
             transition: background 0.15s ease;
+            margin-right: 0.5rem;
+            margin-bottom: 0.375rem;
         }
 
         .stat-source:hover {
@@ -207,6 +209,13 @@
             width: 12px;
             height: 12px;
             opacity: 0.7;
+        }
+
+        .citation-note {
+            font-size: 0.6875rem;
+            color: var(--gray-600);
+            font-style: italic;
+            margin-top: 0.25rem;
         }
 
         /* Highlight Card */
@@ -320,7 +329,7 @@
                     </div>
                     <div>
                         <div class="stat-label">Annual cost of unnecessary imaging in the U.S.</div>
-                        <div class="stat-context">Represents significant waste that evidence-based clinical decision support can reduce.</div>
+                        <div class="stat-context">Estimate from the Harvey L. Neiman Health Policy Institute (ACR-established research arm).</div>
                         <a href="https://www.jacr.org/article/S1546-1440(25)00148-6/fulltext" target="_blank" class="stat-source">
                             <svg class="source-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                             JACR 2025
@@ -331,20 +340,21 @@
                 <div class="stat-card">
                     <div class="stat-number percentage">20–50%</div>
                     <div class="stat-label">of imaging studies may be inappropriate or unnecessary</div>
-                    <div class="stat-context">FDA-cited statistic reflecting overutilization across imaging modalities.</div>
-                    <a href="https://www.fda.gov/radiation-emitting-products/initiative-reduce-unnecessary-radiation-exposure-medical-imaging/appropriate-use" target="_blank" class="stat-source premium">
+                    <div class="stat-context">Landmark consensus from the American Board of Radiology Foundation Summit. 517 citations.</div>
+                    <a href="https://pubmed.ncbi.nlm.nih.gov/20736332/" target="_blank" class="stat-source premium">
                         <svg class="source-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                            FDA
+                        Hendee et al., Radiology 2010
                     </a>
+                    <p class="citation-note">The canonical source for imaging overutilization</p>
                 </div>
 
                 <div class="stat-card">
-                    <div class="stat-number cost">$500K</div>
-                    <div class="stat-label">estimated cost to replace one radiologist</div>
-                    <div class="stat-context">Burnout-related turnover creates substantial financial burden on health systems.</div>
-                    <a href="https://www.merative.com/blog/fight-clinician-burnout-with-radiology-workflow-orchestration" target="_blank" class="stat-source">
+                    <div class="stat-number percentage">26%</div>
+                    <div class="stat-label">of outpatient CT/MRI did not meet appropriateness criteria</div>
+                    <div class="stat-context">At an academic medical center—directly analogous to Duke. Only 13% of inappropriate studies yielded actionable findings vs. 58% for appropriate studies.</div>
+                    <a href="https://pubmed.ncbi.nlm.nih.gov/20889105/" target="_blank" class="stat-source premium">
                         <svg class="source-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                        Merative 2025
+                        Defined Criteria JACR 2010
                     </a>
                 </div>
             </div>
@@ -360,30 +370,69 @@
                 <div class="stat-card">
                     <div class="stat-number percentage">74%</div>
                     <div class="stat-label">of radiology residents receive 2+ misdirected calls daily</div>
-                    <div class="stat-context">Study at Mount Sinai demonstrates pervasive routing failures.</div>
-                    <a href="https://www.diagnosticimaging.com/view/sorry-you-ve-got-the-wrong-number" target="_blank" class="stat-source premium">
+                    <div class="stat-context">Prospective study at Icahn School of Medicine at Mount Sinai. 57.9% of ED providers also reached wrong recipient daily.</div>
+                    <a href="https://pubmed.ncbi.nlm.nih.gov/33082082/" target="_blank" class="stat-source premium">
                         <svg class="source-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                        Curr Probl Diagn Radiol 2021
+                        Voutsinas et al., Curr Probl Diagn Radiol 2021
                     </a>
                 </div>
 
                 <div class="stat-card">
                     <div class="stat-number percentage">38%</div>
                     <div class="stat-label">of communication errors adversely affect patient care</div>
-                    <div class="stat-context">Including delays in diagnosis, unnecessary procedures, and repeat imaging with added radiation exposure.</div>
-                    <a href="https://ajronline.org/doi/10.2214/AJR.15.15117" target="_blank" class="stat-source premium">
+                    <div class="stat-context">23.4% caused major impacts. Documented harms: delayed fracture diagnosis (n=5), ruptured ectopic pregnancy (n=3), 15 unnecessary surgeries.</div>
+                    <a href="https://pubmed.ncbi.nlm.nih.gov/26901014/" target="_blank" class="stat-source premium">
                         <svg class="source-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                        AJR 2016
+                        Siewert et al., AJR 2016
                     </a>
                 </div>
 
                 <div class="stat-card">
-                    <div class="stat-number">50</div>
-                    <div class="stat-label">workflow interruptions per shift from instant messaging alone</div>
-                    <div class="stat-context">Measured among neuroradiology fellows; represents just one communication channel.</div>
-                    <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10960569/" target="_blank" class="stat-source premium">
+                    <div class="stat-number percentage">80%</div>
+                    <div class="stat-label">of serious medical errors involve communication failures</div>
+                    <div class="stat-context">Root cause analysis of sentinel events. Communication breakdown is the leading contributor.</div>
+                    <a href="https://www.jointcommission.org/resources/sentinel-event/" target="_blank" class="stat-source premium">
                         <svg class="source-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                        Clinical Imaging 2024
+                        Joint Commission Sentinel Event Data
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Workflow & Errors Section -->
+        <section class="stats-section">
+            <div class="section-header">
+                <h2>Workflow Interruptions & Diagnostic Errors</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number percentage">12%</div>
+                    <div class="stat-label">increase in diagnostic error per additional phone call</div>
+                    <div class="stat-context">Each interruption during the hour preceding report generation increases error likelihood (P=.017). Key causal link.</div>
+                    <a href="https://pubmed.ncbi.nlm.nih.gov/24439334/" target="_blank" class="stat-source premium">
+                        <svg class="source-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        Balint et al., Acad Radiol 2014
+                    </a>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-number">5.2</div>
+                    <div class="stat-label">interruptions per hour during reading sessions</div>
+                    <div class="stat-context">85% of interpretations interrupted within 3 minutes. Longest uninterrupted period: only 20 minutes.</div>
+                    <a href="https://pubmed.ncbi.nlm.nih.gov/35151560/" target="_blank" class="stat-source premium">
+                        <svg class="source-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        Shah et al., Curr Probl Diagn Radiol 2022
+                    </a>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-number percentage">48%</div>
+                    <div class="stat-label">of radiologist time spent on non-interpretive tasks</div>
+                    <div class="stat-context">Only 52% of time spent on actual image interpretation. Phone calls comprise 16% of interruptions (67% incoming).</div>
+                    <a href="https://pubmed.ncbi.nlm.nih.gov/27720312/" target="_blank" class="stat-source premium">
+                        <svg class="source-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        Glover et al., JACR 2017
                     </a>
                 </div>
             </div>
@@ -397,32 +446,32 @@
             </div>
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-number percentage">44–65%</div>
+                    <div class="stat-number percentage">49%</div>
                     <div class="stat-label">of radiologists report burnout</div>
-                    <div class="stat-context">65% among female radiologists, 44% among male radiologists. Ranks among top burned-out specialties.</div>
-                    <a href="https://www.acr.org/Clinical-Resources/Publications-and-Research/ACR-Bulletin/Burnout-Fueling-Workforce-Woes" target="_blank" class="stat-source premium">
+                    <div class="stat-context">2024 Medscape Physician Burnout Report. Radiology ranks among top 10 burned-out specialties.</div>
+                    <a href="https://www.medscape.com/slideshow/2024-lifestyle-burnout-6016865" target="_blank" class="stat-source premium">
                         <svg class="source-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                        ACR Bulletin 2024
+                        Medscape 2024
                     </a>
                 </div>
 
                 <div class="stat-card">
-                    <div class="stat-number percentage">62%</div>
-                    <div class="stat-label">cite too many bureaucratic tasks as burnout driver</div>
-                    <div class="stat-context">Fragmented systems, alerts, interruptions, and manual coordination steps contribute to cognitive burden.</div>
-                    <a href="https://www.diagnosticimaging.com/view/burnout-in-radiology-key-risk-factors-promising-solutions" target="_blank" class="stat-source">
+                    <div class="stat-number percentage">80%</div>
+                    <div class="stat-label">increase in radiologist workload (2009–2020)</div>
+                    <div class="stat-context">Image count per radiologist increased 399% from 2009–2022. Workload growth outpaces staffing.</div>
+                    <a href="https://pubmed.ncbi.nlm.nih.gov/36326623/" target="_blank" class="stat-source premium">
                         <svg class="source-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                        Diagnostic Imaging 2024
+                        Defined Radiology Workloads, Radiology 2023
                     </a>
                 </div>
 
                 <div class="stat-card">
-                    <div class="stat-number percentage">12%</div>
-                    <div class="stat-label">increase in diagnostic error per additional phone call</div>
-                    <div class="stat-context">Each interruption during the hour preceding report generation increases error likelihood.</div>
-                    <a href="https://pubmed.ncbi.nlm.nih.gov/24439334/" target="_blank" class="stat-source premium">
+                    <div class="stat-number cost">$1M+</div>
+                    <div class="stat-label">cost to replace a physician</div>
+                    <div class="stat-context">Range: $500K–$1.2M including recruitment, onboarding, lost productivity. Preventing one turnover exceeds DukeRad Chat's cost.</div>
+                    <a href="https://pubmed.ncbi.nlm.nih.gov/28817426/" target="_blank" class="stat-source premium">
                         <svg class="source-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                        Acad Radiol 2014
+                        Han et al., Mayo Clin Proc 2017
                     </a>
                 </div>
             </div>
@@ -432,9 +481,12 @@
         <div class="bottom-line">
             <h3>The Bottom Line</h3>
             <p>
-                Radiology communication failures are <strong>costly ($12B/year)</strong>, <strong>pervasive (74% of residents affected daily)</strong>, and <strong>harmful (38% of errors impact patient care)</strong>. 
-                Workflow interruptions directly cause diagnostic errors, while fragmented systems drive burnout that costs <strong>$500K+ per departing radiologist</strong>. 
-                These are not theoretical problems—they are documented, quantified, and addressable.
+                Radiology communication failures are <strong>costly ($12B/year in unnecessary imaging)</strong>, 
+                <strong>pervasive (74% of residents affected daily)</strong>, and 
+                <strong>harmful (38% of errors impact patient care, 80% of sentinel events involve communication)</strong>. 
+                Each phone interruption increases diagnostic errors by <strong>12%</strong>, while radiologists spend 
+                <strong>48% of their time on non-interpretive tasks</strong>. With workloads up <strong>80%</strong> and 
+                burnout at <strong>49%</strong>, the system cannot scale without intervention.
             </p>
         </div>
     </main>
